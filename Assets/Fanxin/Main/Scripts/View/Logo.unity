@@ -569,7 +569,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7295071616554030198, guid: 1403459ef2adf73489601fcaea8cc230, type: 3}
       propertyPath: allScenes.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7295071616554030198, guid: 1403459ef2adf73489601fcaea8cc230, type: 3}
       propertyPath: allScenes.Array.data[0].scenePath
@@ -596,6 +596,10 @@ PrefabInstance:
       value: Assets/Scripts/View/ModeSelect/Clarify/Clarify.unity
       objectReference: {fileID: 0}
     - target: {fileID: 7295071616554030198, guid: 1403459ef2adf73489601fcaea8cc230, type: 3}
+      propertyPath: allScenes.Array.data[6].scenePath
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7295071616554030198, guid: 1403459ef2adf73489601fcaea8cc230, type: 3}
       propertyPath: allScenes.Array.data[0].sceneAsset
       value: 
       objectReference: {fileID: 102900000, guid: 5cb34f72c9612a547a6aa901180681ec, type: 3}
@@ -619,6 +623,10 @@ PrefabInstance:
       propertyPath: allScenes.Array.data[5].sceneAsset
       value: 
       objectReference: {fileID: 102900000, guid: 8797d872bff922847b9dacbd8d37fa73, type: 3}
+    - target: {fileID: 7295071616554030198, guid: 1403459ef2adf73489601fcaea8cc230, type: 3}
+      propertyPath: allScenes.Array.data[6].sceneAsset
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 9092617315920810801, guid: 1403459ef2adf73489601fcaea8cc230, type: 3}
       propertyPath: m_Name
       value: SceneManager
