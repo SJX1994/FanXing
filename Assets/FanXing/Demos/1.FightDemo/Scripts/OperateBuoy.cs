@@ -14,14 +14,16 @@ namespace FanXing.FightDemo
         public enum Command
         {
             Null,
-            Move,
+            MoveOmen,
+            MoveExecute,
             Fight,
             Reset
         }
         public enum State
         {
             Idle,
-            Moving,
+            MoveOmen,
+            MoveExecute,
             Fighting
         }
         public State currentState;
@@ -29,6 +31,21 @@ namespace FanXing.FightDemo
         void Start()
         {
             currentState = State.Idle;
+            TemporaryStorage.OnConfirmKeyPressed += () =>
+            {
+                switch(TemporaryStorage.buoyState)
+                {
+                    case State.MoveOmen:
+                        ExecuteCommand(Command.MoveExecute);
+                        break;
+                    default:
+                        break;
+                }
+            };
+            TemporaryStorage.OnMoveFinish += () =>
+            {
+                ExecuteCommand(Command.Null);
+            };
         }
         void Update()
         {
@@ -41,8 +58,10 @@ namespace FanXing.FightDemo
             {
                 case State.Idle:
                     break;
-                case State.Moving:
-                    MoveingDisplay();
+                case State.MoveOmen:
+                    MoveOmeningDisplay();
+                    break;
+                case State.MoveExecute:
                     break;
                 case State.Fighting:
                     break;
@@ -58,8 +77,11 @@ namespace FanXing.FightDemo
                 case Command.Null:
                     TransitionToState(State.Idle);
                     break;
-                case Command.Move:
-                    TransitionToState(State.Moving);
+                case Command.MoveOmen:
+                    TransitionToState(State.MoveOmen);
+                    break;
+                case Command.MoveExecute:
+                    TransitionToState(State.MoveExecute);
                     break;
                 case Command.Fight:
                     TransitionToState(State.Fighting);
@@ -81,13 +103,14 @@ namespace FanXing.FightDemo
         void InitDisplay()
         {
             path_end.gameObject.SetActive(false);
+            lineRenderer_buoy_path.positionCount = 0;
         }
         private void TransitionToState(State newState)
         {
             currentState = newState;
             TemporaryStorage.buoyState = currentState;
         }
-        private void MoveingDisplay()
+        private void MoveOmeningDisplay()
         {
             Vector3 closestPoint =  FindClosestPoint(TemporaryStorage.pathPoints, buoy.position);
             DrawParabola(buoy.position, closestPoint);
@@ -118,7 +141,7 @@ namespace FanXing.FightDemo
 
             return closestPoint;
         }
-        public void DrawParabola(Vector3 pointA, Vector3 pointB)
+        void DrawParabola(Vector3 pointA, Vector3 pointB)
         {
             // 计算顶点C
             Vector3 pointC = (pointA + pointB) / 2 + Vector3.up * Mathf.Abs(pointA.y - pointB.y)*6f;
@@ -134,6 +157,7 @@ namespace FanXing.FightDemo
             lineRenderer_buoy_path.positionCount = numberOfPoints;
             lineRenderer_buoy_path.SetPositions(positions);
         }
+        
 
         private Vector3 CalculateParabolaPoint(Vector3 pointA, Vector3 pointB, Vector3 pointC, float t)
         {

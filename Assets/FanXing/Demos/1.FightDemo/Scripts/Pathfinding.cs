@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DijkstrasPathfinding;
 using System;
+using DG.Tweening;
 namespace FanXing.FightDemo
 {
 public class Pathfinding : MonoBehaviour
@@ -16,15 +17,27 @@ public class Pathfinding : MonoBehaviour
     {
         Null,
         MovePreparation,
-        Moveing,
+        MoveFinish,
     }
     public enum State
     {
         Idle,
         MovePreparation,
-        Moveing
+        MoveFinish
     }
     public State currentState;
+    void Start()
+    {
+        currentState = State.Idle;
+        TemporaryStorage.OnConfirmKeyPressed += () =>
+        {
+            DOVirtual.DelayedCall(0.2f, () =>OnConfirmKeyPressed());
+        };
+        TemporaryStorage.OnMoveFinish += () =>
+        {
+            ExecuteCommand(Command.MoveFinish);
+        };
+    }
     public void ExecuteCommand(Command command)
     {
         InitDisplay();
@@ -36,8 +49,8 @@ public class Pathfinding : MonoBehaviour
             case Command.MovePreparation:
                 currentState = State.MovePreparation;
                 break;
-            case Command.Moveing:
-                currentState = State.Moveing;
+            case Command.MoveFinish:
+                currentState = State.MoveFinish;
                 break;
             default:
                 Debug.LogError("Invalid command");
@@ -59,7 +72,7 @@ public class Pathfinding : MonoBehaviour
             case State.MovePreparation:
                 Pathfinding_MovePreparation_Display();
                 break;
-            case State.Moveing:
+            case State.MoveFinish:
                 break;
             default:
                 break;
@@ -68,6 +81,7 @@ public class Pathfinding : MonoBehaviour
     void Pathfinding_MovePreparation_Display()
     {
         To.transform.position = TemporaryStorage.path_end_position;
+        From.transform.position = TemporaryStorage.path_start_position;
         m_Path = graph.GetShortestPath( From, To );
         lineRenderer.positionCount = m_Path.nodes.Count;
         for ( int i = 0; i < m_Path.nodes.Count; i++ )
@@ -75,6 +89,17 @@ public class Pathfinding : MonoBehaviour
             Vector3 pos = m_Path.nodes [ i ].transform.position;
             pos.y = 0.6f;
             lineRenderer.SetPosition( i, pos );
+        }
+    }
+    void OnConfirmKeyPressed()
+    {
+        switch (TemporaryStorage.buoyState)
+        {
+            case OperateBuoy.State.MoveExecute:
+                TemporaryStorage.InvokeOnMove(graph,m_Path, From, To);
+                break;
+            default:
+                break;
         }
     }
 }

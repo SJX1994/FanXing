@@ -97,7 +97,6 @@ public class Node_Auto : Node
 	}
 	void Update()
 	{
-			
 		m_Connections.Clear();
 		tuple_nodes = FindClosestPoints();
 		m_Connections.Add(tuple_nodes.Item1);

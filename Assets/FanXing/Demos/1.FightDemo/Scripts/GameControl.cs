@@ -14,12 +14,12 @@ public class GameControl : MonoBehaviour
         FindObjectOfType<UI_CommandSelect>().btn_Command_Move.onClick.AddListener(() =>
         {
             FindObjectOfType<OperateBuoy>().ExecuteCommand(OperateBuoy.Command.Reset);
-            FindObjectOfType<OperateBuoy>().ExecuteCommand(OperateBuoy.Command.Move);
+            FindObjectOfType<OperateBuoy>().ExecuteCommand(OperateBuoy.Command.MoveOmen);
             DOVirtual.DelayedCall(0.2f, () =>
             {
+                FindObjectOfType<Role>().ExecuteCommand(Role.Command.MovePreparation);
                 FindObjectOfType<Pathfinding>().ExecuteCommand(Pathfinding.Command.MovePreparation);
             });
-           
         });
         FindObjectOfType<UI_CommandSelect>().btn_Command_Fight.onClick.AddListener(() =>
         {
@@ -29,6 +29,13 @@ public class GameControl : MonoBehaviour
         {
             FindObjectOfType<OperateBuoy>().ExecuteCommand(OperateBuoy.Command.Reset);
         });
+        TemporaryStorage.OnCancelKeyPressed += () =>
+        {
+            FindObjectOfType<OperateBuoy>().ExecuteCommand(OperateBuoy.Command.Reset);
+            FindObjectOfType<OperateBuoy>().ExecuteCommand(OperateBuoy.Command.Null);
+            FindObjectOfType<Role>().ExecuteCommand(Role.Command.Null);
+            FindObjectOfType<Pathfinding>().ExecuteCommand(Pathfinding.Command.Null);
+        };
     }
     void OnDestroy()
     {
