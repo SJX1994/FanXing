@@ -52,7 +52,7 @@ namespace ShootingEditor2D
 
                 foreach (var filePath in filePaths.Where(f=>f.EndsWith("xml")))
                 {
-                    var fileName = Path.GetFileName(filePath);
+                    var fileName = System.IO.Path.GetFileName(filePath);
                     
                     if (GUI.Button(new Rect(10, y, 100, 40), fileName))
                     {
