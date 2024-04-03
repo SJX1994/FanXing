@@ -71,6 +71,7 @@ public class Node_Auto : Node
 
         for (int i = 0; i < m_Connections_temp.Count; i++)
         {
+            // if(!m_Connections_temp[i])continue;
             if (m_Connections_temp[i] != this) // 排除目标点自身
             {
                 float distance = Vector3.Distance(m_Connections_temp[i].transform.position, transform.position);

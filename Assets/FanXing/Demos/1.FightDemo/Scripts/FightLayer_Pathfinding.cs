@@ -4,6 +4,7 @@ using UnityEngine;
 using DijkstrasPathfinding;
 using System;
 using DG.Tweening;
+
 namespace FanXing.FightDemo
 {
 public class FightLayer_Pathfinding : MonoBehaviour
@@ -17,13 +18,13 @@ public class FightLayer_Pathfinding : MonoBehaviour
     {
         Null,
         MovePreparation,
-        MoveFinish,
+       
     }
     public enum State
     {
         Idle,
         MovePreparation,
-        MoveFinish
+     
     }
     public State currentState;
     void Start()
@@ -31,12 +32,9 @@ public class FightLayer_Pathfinding : MonoBehaviour
         currentState = State.Idle;
         TemporaryStorage.OnConfirmKeyPressed += () =>
         {
-            DOVirtual.DelayedCall(0.2f, () =>OnConfirmKeyPressed());
+            DOVirtual.DelayedCall(0.1f, () =>OnConfirmKeyPressed());
         };
-        TemporaryStorage.OnMoveFinish += () =>
-        {
-            ExecuteCommand(Command.MoveFinish);
-        };
+       
     }
     public void ExecuteCommand(Command command)
     {
@@ -48,9 +46,6 @@ public class FightLayer_Pathfinding : MonoBehaviour
                 break;
             case Command.MovePreparation:
                 currentState = State.MovePreparation;
-                break;
-            case Command.MoveFinish:
-                currentState = State.MoveFinish;
                 break;
             default:
                 Debug.LogError("Invalid command");
@@ -70,25 +65,35 @@ public class FightLayer_Pathfinding : MonoBehaviour
             case State.MovePreparation:
                 Pathfinding_MovePreparation_Display();
                 break;
-            case State.MoveFinish:
-                break;
             default:
                 break;
         }
     }
     void Pathfinding_MovePreparation_Display()
     {
-        To.transform.position = TemporaryStorage.path_end_position;
-        From.transform.position = TemporaryStorage.path_start_position;
+        To.transform.position = TemporaryStorage.Path_end_position;
+        From.transform.position = TemporaryStorage.Path_start_position;
         m_Path = graph.GetShortestPath( From, To );
-        TemporaryStorage.InvokeOnMovePreparation(m_Path);
+        FightLayer_Roles_Role_Move roleMove = TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role>().roleMove;
+        TemporaryStorage.InvokeOnMovePreparation(roleMove,m_Path);
     }
+    int i = 0;
     void OnConfirmKeyPressed()
     {
-        switch (TemporaryStorage.buoyState)
+        switch (TemporaryStorage.BuoyState)
         {
             case OperateLayer_Buoy.State.MoveExecute:
-                TemporaryStorage.InvokeOnMove(graph);
+                ExecuteCommand(Command.Null);
+                FightLayer_Roles_Role_Move roleMove = TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role>().roleMove;
+                i++;
+                // Node tempFrom = From;
+                // Node tempTo = To;
+                Node tempFrom = Instantiate(From,transform);
+                tempFrom.name = "From"+i;
+                Node tempTo = Instantiate(To,transform);
+                tempTo.name = "To"+i;
+                m_Path = graph.GetShortestPath( tempFrom, tempTo );
+                TemporaryStorage.InvokeOnMove(roleMove,graph,m_Path,tempFrom,tempTo);
                 break;
             default:
                 break;

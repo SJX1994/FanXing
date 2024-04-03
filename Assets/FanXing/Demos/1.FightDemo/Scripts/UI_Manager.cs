@@ -30,19 +30,30 @@ namespace FanXing.FightDemo
         void Start()
         {
             uI_CommandSelect.Hide();
-            TemporaryStorage.OnConfirmKeyPressed += () =>
-            {
-                if(TemporaryStorage.buoyState != OperateLayer_Buoy.State.Idle)return;
-                uI_CommandSelect.Show();
-            };
-            TemporaryStorage.OnMove += (graph) =>
+            // TemporaryStorage.OnConfirmKeyPressed += () =>
+            // {
+            //     if(TemporaryStorage.buoyState != OperateLayer_Buoy.State.Idle)return;
+            //     uI_CommandSelect.Show();
+            // };
+            TemporaryStorage.OnMove += (who,graph,path,from,to) =>
             {
                 uI_CommandSelect.Hide();
             };
+            TemporaryStorage.OnShowUnitDescription += ShowUnitDescription;
+            TemporaryStorage.OnShow_UI_Manager += (GameObject go, ScriptableObject_UI_Manager_DisplayOptions DisplayOptions) =>
+            {
+                if(TemporaryStorage.BuoyState != OperateLayer_Buoy.State.Idle)return;
+                UI_CommandSelect.btn_Command_Move.interactable = DisplayOptions.CommandSelectSystem_Button_Move;
+                UI_CommandSelect.btn_Command_Fight.interactable = DisplayOptions.CommandSelectSystem_Button_Fight;
+                UI_CommandSelect.btn_Command_Defense.interactable = DisplayOptions.CommandSelectSystem_Button_Defense;
+                uI_CommandSelect.Show();
+            };
         }
-        public void ShowUnitDescription(Camera targetCamera, GameObject gameObject,ScriptableObject_UnitSimpleDescription scriptableObject_unitSimpleDescription)
+        public void ShowUnitDescription(GameObject gameObject,ScriptableObject_UnitSimpleDescription scriptableObject_unitSimpleDescription)
         {
-            TemporaryStorage.BuoySelectedObject = gameObject;
+            Camera targetCamera = TemporaryStorage.UI_Camera;
+            
+            
 
             SelectedObjectAnimation = gameObject;
             if(isSameObject)return;

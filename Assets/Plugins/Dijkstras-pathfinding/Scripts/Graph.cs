@@ -65,6 +65,7 @@ public class Graph : MonoBehaviour
 		
 		for ( int i = 0; i < m_Nodes.Count; i++ )
 		{
+			// if(m_Nodes[i] == null)continue;
 			Node node = m_Nodes [ i ];
 			unvisited.Add ( node );
 			
@@ -109,6 +110,7 @@ public class Graph : MonoBehaviour
 			// Looping through the Node connections (neighbors) and where the connection (neighbor) is available at unvisited list
 			for ( int i = 0; i < current.connections.Count; i++ )
 			{
+				if(current.connections[i] == null)continue;
 				Node neighbor = current.connections [ i ];
 				
 				// Getting the distance between the current node and the connection (neighbor)

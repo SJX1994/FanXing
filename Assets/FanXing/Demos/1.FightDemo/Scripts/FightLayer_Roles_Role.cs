@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using FanXing.FightDemo;
 using UnityEngine;
 using DG.Tweening;
+using System.Linq;
 namespace FanXing.FightDemo
 {
 public class FightLayer_Roles_Role : MonoBehaviour
@@ -13,17 +14,30 @@ public class FightLayer_Roles_Role : MonoBehaviour
         MovePreparation,
         Moveing,
     }
-    [SerializeField] FightLayer_Roles_Role_Move roleMove;
+    public FightLayer_Roles_Role_Move roleMove;
     [SerializeField] FightLayer_Roles_Role_Status roleStatus;
+    public FightLayer_Roles_Role_SelectTester selectTester;
 
     void Start()
     {
         ExecuteCommand(Command.Null);
 
-        TemporaryStorage.OnMove += (graph) =>
+        TemporaryStorage.OnMovePreparation += (who,path) =>	
+		{
+			who.OnMovePreparation(path);
+		};
+        TemporaryStorage.OnMove += (who,graph,path,from,to) =>
         {
+			
             ExecuteCommand(Command.Moveing);
+            who.OnMove(graph,path,from,to);
+            
         };
+        TemporaryStorage.OnMoveFinish += (who) =>
+		{
+            who.OnMoveFinish();
+		};
+       
     }
     public void ExecuteCommand(Command command)
     {
@@ -63,7 +77,7 @@ public class FightLayer_Roles_Role : MonoBehaviour
     }
     private void Pathfinding_MovePreparation_Display()
     {
-        TemporaryStorage.path_start_position = transform.position;
+        TemporaryStorage.Path_start_position = transform.position;
     }
     private void Pathfinding_Moveing_Display()
     {

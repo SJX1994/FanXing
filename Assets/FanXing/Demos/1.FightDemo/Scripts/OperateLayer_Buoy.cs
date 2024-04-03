@@ -16,8 +16,7 @@ namespace FanXing.FightDemo
             Null,
             MoveOmen,
             MoveExecute,
-            Fight,
-            Reset
+            Fight
         }
         public enum State
         {
@@ -34,18 +33,19 @@ namespace FanXing.FightDemo
             currentState = State.Idle;
             TemporaryStorage.OnConfirmKeyPressed += () =>
             {
-                switch(TemporaryStorage.buoyState)
+                switch(TemporaryStorage.BuoyState)
                 {
                     case State.MoveOmen:
                         ExecuteCommand(Command.MoveExecute);
                         break;
+                    
                     default:
                         break;
                 }
             };
-            TemporaryStorage.OnMoveFinish += () =>
+            TemporaryStorage.OnRestBuoyPosition += (position) =>
             {
-                ExecuteCommand(Command.Null);
+                buoySelector.transform.position = new Vector3(position.x, buoySelector.transform.position.y, position.z);
             };
         }
         void Update()
@@ -75,6 +75,7 @@ namespace FanXing.FightDemo
                     break;
                 case State.Fighting:
                     break;
+                
                 default:
                     break;
             }
@@ -96,15 +97,6 @@ namespace FanXing.FightDemo
                 case Command.Fight:
                     TransitionToState(State.Fighting);
                     break;
-                case Command.Reset:
-                    List<Vector3> rolePos = new();
-                    foreach (FightLayer_Roles_Role role in GameObject.FindObjectsOfType<FightLayer_Roles_Role>())
-                    {
-                        rolePos.Add(role.transform.position);
-                    }
-                    Vector3 clostestPoint = FindClosestPoint(rolePos, buoySelector.transform.position);
-                    buoySelector.transform.position = new Vector3(clostestPoint.x, buoySelector.transform.position.y, clostestPoint.z);
-                    break;
                 default:
                     Debug.LogError("Invalid command");
                     break;
@@ -118,15 +110,15 @@ namespace FanXing.FightDemo
         private void TransitionToState(State newState)
         {
             currentState = newState;
-            TemporaryStorage.buoyState = currentState;
+            TemporaryStorage.BuoyState = currentState;
         }
         private void MoveOmeningDisplay()
         {
-            Vector3 closestPoint =  FindClosestPoint(TemporaryStorage.pathPoints, buoySelector.transform.position);
+            Vector3 closestPoint =  FindClosestPoint(TemporaryStorage.PathPoints, buoySelector.transform.position);
             DrawParabola(buoySelector.transform.position, closestPoint);
             path_end.gameObject.SetActive(true);
             path_end.position = closestPoint;
-            TemporaryStorage.path_end_position = closestPoint;
+            TemporaryStorage.Path_end_position = closestPoint;
         }
         public Vector3 FindClosestPoint(List<Vector3> points, Vector3 targetPoint)
         {

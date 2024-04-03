@@ -10,33 +10,42 @@ public class FightLayer_Roles_Role_Move : MonoBehaviour
 {
 	[SerializeField] LineRenderer lineRenderer;
 	[SerializeField] float m_Speed = 0.01f;
-	protected Path m_Path = new Path ();
+	public Path m_Path = new Path ();
 	protected Node m_Current;
-    protected bool m_IsMoving = false;
-
+    public bool m_IsMoving = false;
+	private Node tempFrom;
+	private Node tempTo;
+	private bool stop = false;
     void Start()
     {
-		
-		TemporaryStorage.OnMovePreparation += (path) =>	
-		{
-			m_Path = path;
-			MovePreparation();
-		};
-        TemporaryStorage.OnMove += (graph) =>
-        {
-			if(m_IsMoving)return;
-            // m_Graph = graph;
-            Move();
-        };
-        TemporaryStorage.OnMoveFinish += () =>
-		{
-            m_Path = null;
-			InitDisplay();
-		};
-           
-        
+
     }
-    
+    public void OnMovePreparation(DijkstrasPathfinding.Path path)
+	{
+		stop = false;
+		m_Path = path;
+		MovePreparation();
+	}
+	public bool OnMove(DijkstrasPathfinding.Graph graph, DijkstrasPathfinding.Path path, DijkstrasPathfinding.Node from, DijkstrasPathfinding.Node to)
+	{
+		// if(!TemporaryStorage.Dictionarys_role_Path.ContainsKey(this))
+		// {   
+		//     TemporaryStorage.Dictionarys_role_Path.Add(this,path);
+		// }
+		// m_Path = TemporaryStorage.Dictionarys_role_Path_FindPath(this);
+		m_Path = path;
+		Move(graph, from, to);
+		return m_IsMoving;
+	}
+	
+	public void OnMoveFinish()
+	{
+		// TemporaryStorage.Dictionarys_role_Path_FindAndRemoveValue(this);
+		stop = true;
+		StopCoroutine (nameof(FollowPath));
+		m_Path = null;
+		InitDisplay();
+	}
     public void Follow ( Path path )
 	{
 		StopCoroutine (nameof(FollowPath));
@@ -44,11 +53,13 @@ public class FightLayer_Roles_Role_Move : MonoBehaviour
 		transform.position = m_Path.nodes [ 0 ].transform.position;
 		StartCoroutine (nameof(FollowPath));
 	}
-	private void InitDisplay()
+	public void InitDisplay()
     {
         lineRenderer.positionCount = 0;
+		// if(tempFrom)Destroy(tempFrom.gameObject);
+		// if(tempTo)Destroy(tempTo.gameObject);
     }
-	void MovePreparation()
+	private void MovePreparation()
     {
         // m_End.transform.position = TemporaryStorage.path_end_position;
         // m_Start.transform.position = TemporaryStorage.path_start_position;
@@ -61,17 +72,27 @@ public class FightLayer_Roles_Role_Move : MonoBehaviour
             lineRenderer.SetPosition( i, pos );
         }
     }
-	void Move()
+	private void Move(Graph m_Graph, Node m_Start, Node m_End)
     {
-        // m_Path = m_Graph.GetShortestPath ( m_Start, m_End );
-		Follow ( m_Path );
+		tempFrom = m_Start;
+		tempTo = m_End;
+		DOVirtual.DelayedCall(0.1f, () =>
+		{
+			m_Path = m_Graph.GetShortestPath( m_Start, m_End );
+			Debug.Log ( m_Path );
+			Follow ( m_Path );
+		});
+        
     }
     IEnumerator FollowPath ()
 	{
+		
         m_IsMoving = true;
 		var e = m_Path.nodes.GetEnumerator ();
+		
 		while ( e.MoveNext () )
 		{
+			
 			m_Current = e.Current;
 			
 			// Wait until we reach the current target node and then go to next node
@@ -82,12 +103,12 @@ public class FightLayer_Roles_Role_Move : MonoBehaviour
 		}
 		m_Current = null;
         m_IsMoving = false;
-        TemporaryStorage.InvokeOnMoveFinish();
+        TemporaryStorage.InvokeOnMoveFinish(this);
 	}
     public void UpdateMoving ()
 	{
         
-		if ( m_Current != null)
+		if ( m_Current != null && stop == false)
 		{
 			transform.position = Vector3.MoveTowards ( transform.position, m_Current.transform.position, m_Speed );
 		}

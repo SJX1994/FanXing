@@ -17,7 +17,7 @@ public class UI_Manager_CommandSelect : MonoBehaviour
 
     public void Show()
     {
-        transform.gameObject.SetActive(true);
+        gameObject.SetActive(true);
         buttons.localScale = new Vector3(1, 0, 1);
         buttons.DOScaleY(1, 0.3f).SetEase(Ease.OutSine);
     }
@@ -25,7 +25,7 @@ public class UI_Manager_CommandSelect : MonoBehaviour
     {
         buttons.DOScaleY(0, 0.3f).SetEase(Ease.InSine).OnComplete(() =>
         {
-            transform.gameObject.SetActive(false);
+            gameObject.SetActive(false);
         });
     }
     void HideButtons()

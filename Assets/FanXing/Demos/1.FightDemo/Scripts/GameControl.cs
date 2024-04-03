@@ -7,6 +7,8 @@ namespace FanXing.FightDemo
 public class GameControl : MonoBehaviour
 {
     [SerializeField]
+    FightLayer_Pathfinding pathfinding;
+    [SerializeField]
     OperateLayer_Buoy operateBuoy;
     [SerializeField]
     FightLayer_Paths fightPaths;
@@ -14,30 +16,27 @@ public class GameControl : MonoBehaviour
     UI_Manager uI_Manager;
     [SerializeField]
     Camera uiCamera;
+   
     private ScriptableObject_UnitSimpleDescription temp_unitSimpleDescription;
     void Start()
     {
+        TemporaryStorage.UI_Camera = uiCamera;
         fightPaths.GetPathVertexs();
         uI_Manager.UI_CommandSelect.btn_Command_Move.onClick.AddListener(() =>
         {
-            operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.Reset);
+            if(TemporaryStorage.BuoySelectingObject == null)return;
             operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.MoveOmen);
-            FindObjectOfType<FightLayer_Roles_Role>().ExecuteCommand(FightLayer_Roles_Role.Command.MovePreparation);
-            FindObjectOfType<FightLayer_Pathfinding>().ExecuteCommand(FightLayer_Pathfinding.Command.MovePreparation);
-            
-            DOVirtual.DelayedCall(0.1f, () =>
-            {
-                
-                
-            });
+            pathfinding.ExecuteCommand(FightLayer_Pathfinding.Command.MovePreparation);
+            TemporaryStorage.BuoySelectingObject.GetComponent<FightLayer_Roles_Role>().ExecuteCommand(FightLayer_Roles_Role.Command.MovePreparation);
+           
         });
         uI_Manager.UI_CommandSelect.btn_Command_Fight.onClick.AddListener(() =>
         {
-            operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.Fight);
+            //operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.Fight);
         });
         uI_Manager.UI_CommandSelect.btn_Command_Defense.onClick.AddListener(() =>
         {
-            operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.Reset);
+            //operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.Reset);
         });
         // TemporaryStorage.OnCancelKeyPressed += () =>
         // {
@@ -47,17 +46,17 @@ public class GameControl : MonoBehaviour
         //     FindObjectOfType<Pathfinding>().ExecuteCommand(Pathfinding.Command.Null);
         //     uI_Manager.UI_CommandSelect.Hide();
         // };
-        TemporaryStorage.OnBuoySelectedObject += (go) =>
-        {
-            if(go.TryGetComponent(out SelectTester selectTest))
-            {
-                if(temp_unitSimpleDescription != selectTest.GetUnitSimpleDescription())
-                {
-                    temp_unitSimpleDescription = selectTest.GetUnitSimpleDescription();
-                }
-                uI_Manager.ShowUnitDescription(uiCamera,go,temp_unitSimpleDescription);
-            }
-        };
+        // TemporaryStorage.OnBuoySelectedObject += (go) =>
+        // {
+        //     if(go.TryGetComponent(out SelectTester selectTest))
+        //     {
+        //         if(temp_unitSimpleDescription != selectTest.GetUnitSimpleDescription())
+        //         {
+        //             temp_unitSimpleDescription = selectTest.GetUnitSimpleDescription();
+        //         }
+        //         uI_Manager.ShowUnitDescription(go,temp_unitSimpleDescription);
+        //     }
+        // };
     }
     void OnDestroy()
     {

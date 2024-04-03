@@ -3,25 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-
+using System.Linq;
+using DijkstrasPathfinding;
 namespace FanXing.FightDemo
 {
     public static class TemporaryStorage
     {
-        private static Camera ui_camera;
-        public static Camera UI_Camera
-        {
-            get
-            {
-                if (ui_camera != null)return                
-                ui_camera = GameObject.Find("UI Camera").GetComponent<Camera>();
-                return ui_camera;
-            }
-        }
-        public static List<Vector3> pathPoints;
-        public static Vector3 path_end_position;
-        public static Vector3 path_start_position;
-        public static OperateLayer_Buoy.State buoyState
+        public static Camera UI_Camera;
+       
+        public static List<Vector3> PathPoints;
+        public static Vector3 Path_end_position;
+        public static Vector3 Path_start_position;
+        public static OperateLayer_Buoy.State BuoyState
         {
             get => _buoyState;
             set
@@ -32,27 +25,34 @@ namespace FanXing.FightDemo
         }
         private static OperateLayer_Buoy.State _buoyState;
         public static event Action<OperateLayer_Buoy.State> OnBuoyStateChanged;
+        public static event Action<Vector3> OnRestBuoyPosition;
+        public static void InvokeOnRestBuoyPosition(Vector3 position)
+        {
+            OnRestBuoyPosition?.Invoke(position);
+        }
+        public static GameObject BuoySelectingObject;
+        public static GameObject BuoySelectedObject;
         public static event Action<GameObject> OnBuoySelectedObject;
         public static void InvokeOnBuoyStateSelected(GameObject go)
         {
             OnBuoySelectedObject?.Invoke(go);
         }
-        public static GameObject BuoySelectedObject;
-        public static event Action<DijkstrasPathfinding.Path> OnMovePreparation;
-        public static void InvokeOnMovePreparation(DijkstrasPathfinding.Path path)
+        
+        public static event Action<FightLayer_Roles_Role_Move,DijkstrasPathfinding.Path> OnMovePreparation;
+        public static void InvokeOnMovePreparation(FightLayer_Roles_Role_Move who,DijkstrasPathfinding.Path path)
         {
-            OnMovePreparation?.Invoke(path);
+            OnMovePreparation?.Invoke(who,path);
         }
        
-        public static event Action<DijkstrasPathfinding.Graph> OnMove;
-        public static void InvokeOnMove(DijkstrasPathfinding.Graph graph)
+        public static event Action<FightLayer_Roles_Role_Move,DijkstrasPathfinding.Graph,DijkstrasPathfinding.Path,DijkstrasPathfinding.Node,DijkstrasPathfinding.Node> OnMove;
+        public static void InvokeOnMove(FightLayer_Roles_Role_Move who,DijkstrasPathfinding.Graph graph,DijkstrasPathfinding.Path path,DijkstrasPathfinding.Node tempFrom,DijkstrasPathfinding.Node tempTo)
         {
-            OnMove?.Invoke(graph);
+            OnMove?.Invoke(who,graph,path,tempFrom,tempTo);
         }
-        public static event Action OnMoveFinish;
-        public static void InvokeOnMoveFinish()
+        public static event Action<FightLayer_Roles_Role_Move> OnMoveFinish;
+        public static void InvokeOnMoveFinish(FightLayer_Roles_Role_Move who)
         {
-            OnMoveFinish?.Invoke();
+            OnMoveFinish?.Invoke(who);
         }
         public static event Action OnConfirmKeyPressed;
         public static void InvokeOnConfirmKeyPressed()
@@ -64,6 +64,17 @@ namespace FanXing.FightDemo
         {
             OnCancelKeyPressed?.Invoke();
         }
+        public static event Action<GameObject,ScriptableObject_UI_Manager_DisplayOptions> OnShow_UI_Manager;
+        public static void InvokeOnShow_UI_Manager(GameObject go,ScriptableObject_UI_Manager_DisplayOptions scriptableObject_UI_Manager_DisplayOptions)
+        {
+            OnShow_UI_Manager?.Invoke(go,scriptableObject_UI_Manager_DisplayOptions);
+        }
+        public static event Action<GameObject,ScriptableObject_UnitSimpleDescription> OnShowUnitDescription;
+        public static void InvokeOnShowUnitDescription(GameObject go,ScriptableObject_UnitSimpleDescription scriptableObject_UnitSimpleDescription)
+        {
+            OnShowUnitDescription?.Invoke(go,scriptableObject_UnitSimpleDescription);
+        }
+        
         public enum UnitName
         {
             AOE_Mage,
@@ -81,10 +92,10 @@ namespace FanXing.FightDemo
         }
         public static void ClearValues()
         {
-            path_end_position = Vector3.zero;
-            path_start_position = Vector3.zero;
-            pathPoints = null;
-            buoyState = OperateLayer_Buoy.State.Idle;
+            Path_end_position = Vector3.zero;
+            Path_start_position = Vector3.zero;
+            PathPoints = null;
+            BuoyState = OperateLayer_Buoy.State.Idle;
             OnBuoyStateChanged = null;
             OnMove = null;
             OnConfirmKeyPressed = null;
@@ -92,6 +103,13 @@ namespace FanXing.FightDemo
             OnMoveFinish = null;
             OnBuoySelectedObject = null;
             BuoySelectedObject = null;
+            BuoySelectingObject = null;
+            OnRestBuoyPosition = null;
+            OnMovePreparation = null;
+            OnShowUnitDescription = null;
+            OnShow_UI_Manager = null;
+            UI_Camera = null;
+            
         }
     }
 }

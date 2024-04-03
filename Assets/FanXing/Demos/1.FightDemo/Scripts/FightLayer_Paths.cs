@@ -19,7 +19,7 @@ namespace FanXing.FightDemo
             {
                 pathPoints.AddRange(pathCreator.meshHolder.GetComponent<MeshFilter>().mesh.vertices);
             }
-            TemporaryStorage.pathPoints = pathPoints;
+            TemporaryStorage.PathPoints = pathPoints;
             // foreach (var point in pathPoints)
             // {
             //     GameObject sphere = GameObject.Instantiate(spherePrefab, point, Quaternion.identity);
