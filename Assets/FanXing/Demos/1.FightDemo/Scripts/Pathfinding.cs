@@ -11,7 +11,7 @@ public class Pathfinding : MonoBehaviour
     [SerializeField] Node From;
     [SerializeField] Node To;
     [SerializeField] Graph graph;
-    [SerializeField] LineRenderer lineRenderer;
+    
     Path m_Path = new Path ();
     public enum Command
     {
@@ -40,7 +40,7 @@ public class Pathfinding : MonoBehaviour
     }
     public void ExecuteCommand(Command command)
     {
-        InitDisplay();
+        
         switch (command)
         {
             case Command.Null:
@@ -58,16 +58,14 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
-    private void InitDisplay()
-    {
-        lineRenderer.positionCount = 0;
-    }
+    
 
     void Update()
     {
         switch (currentState)
         {
             case State.Idle:
+                
                 break;
             case State.MovePreparation:
                 Pathfinding_MovePreparation_Display();
@@ -83,20 +81,14 @@ public class Pathfinding : MonoBehaviour
         To.transform.position = TemporaryStorage.path_end_position;
         From.transform.position = TemporaryStorage.path_start_position;
         m_Path = graph.GetShortestPath( From, To );
-        lineRenderer.positionCount = m_Path.nodes.Count;
-        for ( int i = 0; i < m_Path.nodes.Count; i++ )
-        {
-            Vector3 pos = m_Path.nodes [ i ].transform.position;
-            pos.y = 0.6f;
-            lineRenderer.SetPosition( i, pos );
-        }
+        TemporaryStorage.InvokeOnMovePreparation(m_Path);
     }
     void OnConfirmKeyPressed()
     {
         switch (TemporaryStorage.buoyState)
         {
             case OperateBuoy.State.MoveExecute:
-                TemporaryStorage.InvokeOnMove(graph,m_Path, From, To);
+                TemporaryStorage.InvokeOnMove(graph);
                 break;
             default:
                 break;

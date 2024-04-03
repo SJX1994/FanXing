@@ -7,7 +7,7 @@ namespace FanXing.FightDemo
     public class OperateBuoy : MonoBehaviour
     {
         [SerializeField] float moveSpeed = 5f;
-        [SerializeField] Transform buoy;
+        [SerializeField] Buoy buoy;
         [SerializeField] LineRenderer lineRenderer_buoy_path;
         [SerializeField] Transform path_end;
         [SerializeField] int numberOfPoints = 10;
@@ -27,6 +27,7 @@ namespace FanXing.FightDemo
             Fighting
         }
         public State currentState;
+        private float timer = 0f;
 
         void Start()
         {
@@ -49,19 +50,28 @@ namespace FanXing.FightDemo
         }
         void Update()
         {
+            
             float moveX = Input.GetAxis("Horizontal"); // A 和 D 键
             float moveZ = Input.GetAxis("Vertical"); // W 和 S 键
 
             Vector3 movement = new Vector3(moveX, 0f, moveZ) * moveSpeed * Time.deltaTime;
-            buoy.Translate(movement, Space.Self);
+            buoy.transform.Translate(movement, Space.Self);
             switch (currentState)
             {
                 case State.Idle:
+                    buoy.UpdateSelector();
                     break;
                 case State.MoveOmen:
                     MoveOmeningDisplay();
                     break;
                 case State.MoveExecute:
+                    timer += Time.deltaTime;
+                    if (timer > 0.5f)
+                    {
+                        timer = 0f;
+                        ExecuteCommand(Command.Null);
+                    }
+                    
                     break;
                 case State.Fighting:
                     break;
@@ -92,8 +102,8 @@ namespace FanXing.FightDemo
                     {
                         rolePos.Add(role.transform.position);
                     }
-                    Vector3 clostestPoint = FindClosestPoint(rolePos, buoy.position);
-                    buoy.position = new Vector3(clostestPoint.x, buoy.position.y, clostestPoint.z);
+                    Vector3 clostestPoint = FindClosestPoint(rolePos, buoy.transform.position);
+                    buoy.transform.position = new Vector3(clostestPoint.x, buoy.transform.position.y, clostestPoint.z);
                     break;
                 default:
                     Debug.LogError("Invalid command");
@@ -112,8 +122,8 @@ namespace FanXing.FightDemo
         }
         private void MoveOmeningDisplay()
         {
-            Vector3 closestPoint =  FindClosestPoint(TemporaryStorage.pathPoints, buoy.position);
-            DrawParabola(buoy.position, closestPoint);
+            Vector3 closestPoint =  FindClosestPoint(TemporaryStorage.pathPoints, buoy.transform.position);
+            DrawParabola(buoy.transform.position, closestPoint);
             path_end.gameObject.SetActive(true);
             path_end.position = closestPoint;
             TemporaryStorage.path_end_position = closestPoint;

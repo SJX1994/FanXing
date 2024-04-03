@@ -8,7 +8,16 @@ namespace FanXing.FightDemo
 {
     public static class TemporaryStorage
     {
-
+        private static Camera ui_camera;
+        public static Camera UI_Camera
+        {
+            get
+            {
+                if (ui_camera != null)return                
+                ui_camera = GameObject.Find("UI Camera").GetComponent<Camera>();
+                return ui_camera;
+            }
+        }
         public static List<Vector3> pathPoints;
         public static Vector3 path_end_position;
         public static Vector3 path_start_position;
@@ -23,10 +32,22 @@ namespace FanXing.FightDemo
         }
         private static OperateBuoy.State _buoyState;
         public static event Action<OperateBuoy.State> OnBuoyStateChanged;
-        public static event Action<DijkstrasPathfinding.Graph,DijkstrasPathfinding.Path,DijkstrasPathfinding.Node,DijkstrasPathfinding.Node> OnMove;
-        public static void InvokeOnMove(DijkstrasPathfinding.Graph graph, DijkstrasPathfinding.Path path, DijkstrasPathfinding.Node from, DijkstrasPathfinding.Node to)
+        public static event Action<GameObject> OnBuoySelectedObject;
+        public static void InvokeOnBuoyStateSelected(GameObject go)
         {
-            OnMove?.Invoke(graph, path, from, to);
+            OnBuoySelectedObject?.Invoke(go);
+        }
+        public static GameObject BuoySelectedObject;
+        public static event Action<DijkstrasPathfinding.Path> OnMovePreparation;
+        public static void InvokeOnMovePreparation(DijkstrasPathfinding.Path path)
+        {
+            OnMovePreparation?.Invoke(path);
+        }
+       
+        public static event Action<DijkstrasPathfinding.Graph> OnMove;
+        public static void InvokeOnMove(DijkstrasPathfinding.Graph graph)
+        {
+            OnMove?.Invoke(graph);
         }
         public static event Action OnMoveFinish;
         public static void InvokeOnMoveFinish()
@@ -43,6 +64,21 @@ namespace FanXing.FightDemo
         {
             OnCancelKeyPressed?.Invoke();
         }
+        public enum UnitName
+        {
+            AOE_Mage,
+            Dodge_Tank,
+        }
+        public enum UnitType
+        {
+            Ground,
+            Air,
+        }
+        public enum UnitCamp
+        {
+            Enemy,
+            Friendly,
+        }
         public static void ClearValues()
         {
             path_end_position = Vector3.zero;
@@ -53,6 +89,9 @@ namespace FanXing.FightDemo
             OnMove = null;
             OnConfirmKeyPressed = null;
             OnCancelKeyPressed = null;
+            OnMoveFinish = null;
+            OnBuoySelectedObject = null;
+            BuoySelectedObject = null;
         }
     }
 }

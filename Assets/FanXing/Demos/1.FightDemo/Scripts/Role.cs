@@ -13,18 +13,14 @@ public class Role : MonoBehaviour
         MovePreparation,
         Moveing,
     }
-    public enum State
-    {
-        Idle,
-        MovePreparation,
-        Moveing
-    }
-    public State currentState;
+    [SerializeField] RoleMove roleMove;
+    [SerializeField] RoleStatus roleStatus;
 
     void Start()
     {
-        currentState = State.Idle;
-        TemporaryStorage.OnMove += (graph,path, startNode, endNode) =>
+        ExecuteCommand(Command.Null);
+
+        TemporaryStorage.OnMove += (graph) =>
         {
             ExecuteCommand(Command.Moveing);
         };
@@ -34,13 +30,13 @@ public class Role : MonoBehaviour
         switch (command)
         {
             case Command.Null:
-                currentState = State.Idle;
+                roleStatus.currentState = RoleStatus.State.Idle;
                 break;
             case Command.MovePreparation:
-                currentState = State.MovePreparation;
+                roleStatus.currentState = RoleStatus.State.MovePreparation;
                 break;
             case Command.Moveing:
-                currentState = State.Moveing;
+                roleStatus.currentState = RoleStatus.State.Moveing;
                 break;
             default:
                 Debug.LogError("Invalid command");
@@ -49,14 +45,15 @@ public class Role : MonoBehaviour
     }
     void Update()
     {
-        switch (currentState)
+        roleStatus.UpdateStatusLogic();
+        switch (roleStatus.currentState)
         {
-            case State.Idle:
+            case RoleStatus.State.Idle:
                 break;
-            case State.MovePreparation:
+            case RoleStatus.State.MovePreparation:
                 Pathfinding_MovePreparation_Display();
                 break;
-            case State.Moveing:
+            case RoleStatus.State.Moveing:
                 Pathfinding_Moveing_Display();
                 break;
             default:
@@ -70,7 +67,7 @@ public class Role : MonoBehaviour
     }
     private void Pathfinding_Moveing_Display()
     {
-        
+        roleMove.UpdateMoving();
     }
 }
 }
