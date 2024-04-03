@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace FanXing.FightDemo
 {
-    public class Buoy : MonoBehaviour
+    public class OperateLayer_Buoy_Selector : MonoBehaviour
     {
         [SerializeField]Transform selector;
         

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 namespace FanXing.FightDemo
 {
-    public class UI_UnitSimpleDescription : MonoBehaviour
+    public class UI_Manager_UnitSimpleDescription : MonoBehaviour
     {
         [SerializeField] Image image_Profile;
         [SerializeField] Image image_Profile_Fram;

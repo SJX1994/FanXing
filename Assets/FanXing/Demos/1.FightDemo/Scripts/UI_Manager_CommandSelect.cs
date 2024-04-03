@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-public class UI_CommandSelect : MonoBehaviour
+public class UI_Manager_CommandSelect : MonoBehaviour
 {
     [SerializeField] RectTransform buttons;
     public Button btn_Command_Move,btn_Command_Fight,btn_Command_Defense;

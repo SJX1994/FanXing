@@ -7,9 +7,9 @@ namespace FanXing.FightDemo
 public class GameControl : MonoBehaviour
 {
     [SerializeField]
-    OperateBuoy operateBuoy;
+    OperateLayer_Buoy operateBuoy;
     [SerializeField]
-    FightPaths fightPaths;
+    FightLayer_Paths fightPaths;
     [SerializeField]
     UI_Manager uI_Manager;
     [SerializeField]
@@ -20,10 +20,10 @@ public class GameControl : MonoBehaviour
         fightPaths.GetPathVertexs();
         uI_Manager.UI_CommandSelect.btn_Command_Move.onClick.AddListener(() =>
         {
-            operateBuoy.ExecuteCommand(OperateBuoy.Command.Reset);
-            operateBuoy.ExecuteCommand(OperateBuoy.Command.MoveOmen);
-            FindObjectOfType<Role>().ExecuteCommand(Role.Command.MovePreparation);
-            FindObjectOfType<Pathfinding>().ExecuteCommand(Pathfinding.Command.MovePreparation);
+            operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.Reset);
+            operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.MoveOmen);
+            FindObjectOfType<FightLayer_Roles_Role>().ExecuteCommand(FightLayer_Roles_Role.Command.MovePreparation);
+            FindObjectOfType<FightLayer_Pathfinding>().ExecuteCommand(FightLayer_Pathfinding.Command.MovePreparation);
             
             DOVirtual.DelayedCall(0.1f, () =>
             {
@@ -33,11 +33,11 @@ public class GameControl : MonoBehaviour
         });
         uI_Manager.UI_CommandSelect.btn_Command_Fight.onClick.AddListener(() =>
         {
-            operateBuoy.ExecuteCommand(OperateBuoy.Command.Fight);
+            operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.Fight);
         });
         uI_Manager.UI_CommandSelect.btn_Command_Defense.onClick.AddListener(() =>
         {
-            operateBuoy.ExecuteCommand(OperateBuoy.Command.Reset);
+            operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.Reset);
         });
         // TemporaryStorage.OnCancelKeyPressed += () =>
         // {

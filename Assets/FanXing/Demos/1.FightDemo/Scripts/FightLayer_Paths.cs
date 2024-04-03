@@ -6,7 +6,7 @@ using PathCreation.Examples;
 using System.Linq;
 namespace FanXing.FightDemo
 {
-    public class FightPaths : MonoBehaviour
+    public class FightLayer_Paths : MonoBehaviour
     {
         public List<Vector3> pathPoints = new List<Vector3>();
         [SerializeField]

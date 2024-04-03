@@ -21,7 +21,7 @@ namespace FanXing.FightDemo
         public static List<Vector3> pathPoints;
         public static Vector3 path_end_position;
         public static Vector3 path_start_position;
-        public static OperateBuoy.State buoyState
+        public static OperateLayer_Buoy.State buoyState
         {
             get => _buoyState;
             set
@@ -30,8 +30,8 @@ namespace FanXing.FightDemo
                 OnBuoyStateChanged?.Invoke(value);
             }
         }
-        private static OperateBuoy.State _buoyState;
-        public static event Action<OperateBuoy.State> OnBuoyStateChanged;
+        private static OperateLayer_Buoy.State _buoyState;
+        public static event Action<OperateLayer_Buoy.State> OnBuoyStateChanged;
         public static event Action<GameObject> OnBuoySelectedObject;
         public static void InvokeOnBuoyStateSelected(GameObject go)
         {
@@ -84,7 +84,7 @@ namespace FanXing.FightDemo
             path_end_position = Vector3.zero;
             path_start_position = Vector3.zero;
             pathPoints = null;
-            buoyState = OperateBuoy.State.Idle;
+            buoyState = OperateLayer_Buoy.State.Idle;
             OnBuoyStateChanged = null;
             OnMove = null;
             OnConfirmKeyPressed = null;

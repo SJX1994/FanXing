@@ -6,7 +6,7 @@ using System;
 using DG.Tweening;
 namespace FanXing.FightDemo
 {
-public class Pathfinding : MonoBehaviour
+public class FightLayer_Pathfinding : MonoBehaviour
 {
     [SerializeField] Node From;
     [SerializeField] Node To;
@@ -87,7 +87,7 @@ public class Pathfinding : MonoBehaviour
     {
         switch (TemporaryStorage.buoyState)
         {
-            case OperateBuoy.State.MoveExecute:
+            case OperateLayer_Buoy.State.MoveExecute:
                 TemporaryStorage.InvokeOnMove(graph);
                 break;
             default:

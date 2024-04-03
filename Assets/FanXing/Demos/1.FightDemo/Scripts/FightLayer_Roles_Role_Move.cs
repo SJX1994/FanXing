@@ -6,7 +6,7 @@ using DG.Tweening;
 namespace FanXing.FightDemo
 {
 
-public class RoleMove : MonoBehaviour
+public class FightLayer_Roles_Role_Move : MonoBehaviour
 {
 	[SerializeField] LineRenderer lineRenderer;
 	[SerializeField] float m_Speed = 0.01f;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace FanXing.FightDemo
 {
-    public class OperateKeyboard : MonoBehaviour
+    public class OperateLayer_Keyboard : MonoBehaviour
     {
         [SerializeField] KeyCode confirmKey;
         [SerializeField] KeyCode cancelKey;

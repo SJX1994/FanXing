@@ -7,10 +7,10 @@ namespace FanXing.FightDemo
 {
     public class UI_Manager : MonoBehaviour
     {
-        [SerializeField] UI_UnitSimpleDescription unitSimpleDescription;
+        [SerializeField] UI_Manager_UnitSimpleDescription unitSimpleDescription;
         [SerializeField] Canvas uiCanvas;
-        [SerializeField] UI_CommandSelect uI_CommandSelect;
-        public UI_CommandSelect UI_CommandSelect => uI_CommandSelect;
+        [SerializeField] UI_Manager_CommandSelect uI_CommandSelect;
+        public UI_Manager_CommandSelect UI_CommandSelect => uI_CommandSelect;
         private GameObject selectedObjectAnimation;
         private GameObject SelectedObjectAnimation
         {
@@ -32,7 +32,7 @@ namespace FanXing.FightDemo
             uI_CommandSelect.Hide();
             TemporaryStorage.OnConfirmKeyPressed += () =>
             {
-                if(TemporaryStorage.buoyState != OperateBuoy.State.Idle)return;
+                if(TemporaryStorage.buoyState != OperateLayer_Buoy.State.Idle)return;
                 uI_CommandSelect.Show();
             };
             TemporaryStorage.OnMove += (graph) =>

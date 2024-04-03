@@ -5,7 +5,7 @@ using UnityEngine;
 using DG.Tweening;
 namespace FanXing.FightDemo
 {
-public class Role : MonoBehaviour
+public class FightLayer_Roles_Role : MonoBehaviour
 {
     public enum Command
     {
@@ -13,8 +13,8 @@ public class Role : MonoBehaviour
         MovePreparation,
         Moveing,
     }
-    [SerializeField] RoleMove roleMove;
-    [SerializeField] RoleStatus roleStatus;
+    [SerializeField] FightLayer_Roles_Role_Move roleMove;
+    [SerializeField] FightLayer_Roles_Role_Status roleStatus;
 
     void Start()
     {
@@ -30,13 +30,13 @@ public class Role : MonoBehaviour
         switch (command)
         {
             case Command.Null:
-                roleStatus.currentState = RoleStatus.State.Idle;
+                roleStatus.currentState = FightLayer_Roles_Role_Status.State.Idle;
                 break;
             case Command.MovePreparation:
-                roleStatus.currentState = RoleStatus.State.MovePreparation;
+                roleStatus.currentState = FightLayer_Roles_Role_Status.State.MovePreparation;
                 break;
             case Command.Moveing:
-                roleStatus.currentState = RoleStatus.State.Moveing;
+                roleStatus.currentState = FightLayer_Roles_Role_Status.State.Moveing;
                 break;
             default:
                 Debug.LogError("Invalid command");
@@ -48,12 +48,12 @@ public class Role : MonoBehaviour
         roleStatus.UpdateStatusLogic();
         switch (roleStatus.currentState)
         {
-            case RoleStatus.State.Idle:
+            case FightLayer_Roles_Role_Status.State.Idle:
                 break;
-            case RoleStatus.State.MovePreparation:
+            case FightLayer_Roles_Role_Status.State.MovePreparation:
                 Pathfinding_MovePreparation_Display();
                 break;
-            case RoleStatus.State.Moveing:
+            case FightLayer_Roles_Role_Status.State.Moveing:
                 Pathfinding_Moveing_Display();
                 break;
             default:

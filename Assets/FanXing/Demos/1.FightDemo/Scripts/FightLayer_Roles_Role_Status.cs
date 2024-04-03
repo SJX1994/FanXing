@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace FanXing.FightDemo
 {
-    public class RoleStatus : MonoBehaviour
+    public class FightLayer_Roles_Role_Status : MonoBehaviour
     {
         
         public enum State
