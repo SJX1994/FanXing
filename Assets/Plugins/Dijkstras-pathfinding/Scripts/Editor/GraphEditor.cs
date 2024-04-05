@@ -28,11 +28,11 @@ public class GraphEditor : Editor
 		}
 		for ( int i = 0; i < m_Graph.nodes.Count; i++ )
 		{
-			// if(m_Graph.nodes[i] == null)
-			// {
-			// 	m_Graph.nodes.RemoveAt(i);
-			// 	continue;
-			// }
+			if(m_Graph.nodes[i] == null)
+			{
+				m_Graph.nodes.RemoveAt(i);
+				continue;
+			}
 			Node node = m_Graph.nodes [ i ];
 			for ( int j = 0; j < node.connections.Count; j++ )
 			{

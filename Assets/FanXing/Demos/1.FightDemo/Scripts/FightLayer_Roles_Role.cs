@@ -77,6 +77,7 @@ public class FightLayer_Roles_Role : MonoBehaviour
     }
     private void Pathfinding_MovePreparation_Display()
     {
+
         TemporaryStorage.Path_start_position = transform.position;
     }
     private void Pathfinding_Moveing_Display()

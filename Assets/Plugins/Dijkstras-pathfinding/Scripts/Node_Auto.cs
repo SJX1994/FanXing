@@ -31,6 +31,12 @@ public class Node_Auto : Node
 			m_tuple_nodes.Item2.connections.Add(this);		
 		}
 	}
+    public void RemoveAutoNode()
+    {
+        m_tuple_nodes.Item1.connections.Remove(this);
+		m_tuple_nodes.Item2.connections.Remove(this);
+        Destroy(gameObject);
+    }
     public Node FindClosestPoint(List<Node> m_Connections_temp)
     {
         if (m_Connections_temp.Count == 0)
@@ -45,6 +51,7 @@ public class Node_Auto : Node
         for (int i = 1; i < m_Connections_temp.Count; i++)
         {
 			if(m_Connections_temp[i] == transform.GetComponent<Node>())continue;
+            if(m_Connections_temp[i].TryGetComponent<Node_Auto>(out var node))continue;
             float distance = Vector3.Distance(m_Connections_temp[i].transform.position, transform.position);
             if (distance < minDistance)
             {
@@ -71,23 +78,23 @@ public class Node_Auto : Node
 
         for (int i = 0; i < m_Connections_temp.Count; i++)
         {
-            // if(!m_Connections_temp[i])continue;
-            if (m_Connections_temp[i] != this) // 排除目标点自身
+            if(!m_Connections_temp[i])continue;
+            if (m_Connections_temp[i] == this)continue; // 排除目标点自身
+            if (m_Connections_temp[i].TryGetComponent<Node_Auto>(out var node))continue; 
+            float distance = Vector3.Distance(m_Connections_temp[i].transform.position, transform.position);
+            if (distance < minDistance1)
             {
-                float distance = Vector3.Distance(m_Connections_temp[i].transform.position, transform.position);
-                if (distance < minDistance1)
-                {
-                    closestPoint2 = closestPoint1;
-                    minDistance2 = minDistance1;
-                    closestPoint1 = m_Connections_temp[i];
-                    minDistance1 = distance;
-                }
-                else if (distance < minDistance2)
-                {
-                    closestPoint2 = m_Connections_temp[i];
-                    minDistance2 = distance;
-                }
+                closestPoint2 = closestPoint1;
+                minDistance2 = minDistance1;
+                closestPoint1 = m_Connections_temp[i];
+                minDistance1 = distance;
             }
+            else if (distance < minDistance2)
+            {
+                closestPoint2 = m_Connections_temp[i];
+                minDistance2 = distance;
+            }
+            
         }
 
         return new Tuple<Node, Node>(closestPoint1, closestPoint2);
