@@ -7,60 +7,41 @@ namespace FanXing.FightDemo
 {
     public class UI_Manager : MonoBehaviour
     {
-        [SerializeField] UI_Manager_UnitSimpleDescription unitSimpleDescription;
+        [SerializeField] UI_Manager_UnitSimpleDescription uI_UnitSimpleDescription;
         [SerializeField] Canvas uiCanvas;
         [SerializeField] UI_Manager_CommandSelect uI_CommandSelect;
         public UI_Manager_CommandSelect UI_CommandSelect => uI_CommandSelect;
-        private GameObject selectedObjectAnimation;
-        private GameObject SelectedObjectAnimation
-        {
-            get => selectedObjectAnimation;
-            set
-            {
-                if(selectedObjectAnimation == value){isSameObject = true; return;}
-                unitSimpleDescription.transform.localScale = new Vector3(1, 0, 1);
-                unitSimpleDescription.transform.DOScaleY(1, 0.3f).SetEase(Ease.OutFlash).OnComplete(() =>
-                {
-                    isSameObject = false;
-                });
-                
-            }
-        }
-        bool isSameObject = false;
+        
         void Start()
         {
-            uI_CommandSelect.Hide();
-            // TemporaryStorage.OnConfirmKeyPressed += () =>
-            // {
-            //     if(TemporaryStorage.buoyState != OperateLayer_Buoy.State.Idle)return;
-            //     uI_CommandSelect.Show();
-            // };
+            uI_CommandSelect.ExecuteCommand(UI_Manager_CommandSelect.Command.Null);
             TemporaryStorage.OnMove += (who,graph,path,from,to) =>
             {
-                uI_CommandSelect.Hide();
+                uI_CommandSelect.ExecuteCommand(UI_Manager_CommandSelect.Command.Null);
             };
-            TemporaryStorage.OnShowUnitDescription += ShowUnitDescription;
-            TemporaryStorage.OnShow_UI_Manager += (GameObject go, ScriptableObject_UI_Manager_DisplayOptions DisplayOptions) =>
+            TemporaryStorage.OnShowUnitDescription += Show_UI_UnitSimpleDescription;
+            TemporaryStorage.OnHideUnitDescription += () =>
             {
-                if(TemporaryStorage.BuoyState != OperateLayer_Buoy.State.Idle)return;
-                UI_CommandSelect.btn_Command_Move.interactable = DisplayOptions.CommandSelectSystem_Button_Move;
-                UI_CommandSelect.btn_Command_Fight.interactable = DisplayOptions.CommandSelectSystem_Button_Fight;
-                UI_CommandSelect.btn_Command_Defense.interactable = DisplayOptions.CommandSelectSystem_Button_Defense;
-                uI_CommandSelect.Show();
+                if(!uI_UnitSimpleDescription.isShowing)return;
+                uI_UnitSimpleDescription.ExecuteCommand(UI_Manager_UnitSimpleDescription.Command.Hide);
             };
+            TemporaryStorage.OnShow_UI_Manager += Show_UI_CommandSelect_Data;
         }
-        public void ShowUnitDescription(GameObject gameObject,ScriptableObject_UnitSimpleDescription scriptableObject_unitSimpleDescription)
+        void Show_UI_CommandSelect_Data(GameObject gameObject,ScriptableObject_UI_Manager_DisplayOptions displayOptions)
         {
+            if(TemporaryStorage.BuoyState != OperateLayer_Buoy.State.Idle)return;
+            UI_CommandSelect.btn_Command_Move.interactable = displayOptions.CommandSelectSystem_Button_Move;
+            UI_CommandSelect.btn_Command_Action.interactable = displayOptions.CommandSelectSystem_Button_Fight;
+            UI_CommandSelect.btn_Command_Defense.interactable = displayOptions.CommandSelectSystem_Button_Defense;
+            
+            uI_CommandSelect.ExecuteCommand(UI_Manager_CommandSelect.Command.Idle);
+        }
+        void Show_UI_UnitSimpleDescription(GameObject gameObject,ScriptableObject_UnitSimpleDescription scriptableObject_unitSimpleDescription)
+        {
+            
             Camera targetCamera = TemporaryStorage.UI_Camera;
-            
-            
-
-            SelectedObjectAnimation = gameObject;
-            if(isSameObject)return;
             // 更新 UI 元素内容
-            unitSimpleDescription.UpdateDescription(scriptableObject_unitSimpleDescription);
-
-            unitSimpleDescription.gameObject.SetActive(true);
+            uI_UnitSimpleDescription.UpdateDescription(scriptableObject_unitSimpleDescription);
             // 获取世界坐标
             Vector3 worldPos = gameObject.transform.position;
 
@@ -72,16 +53,14 @@ namespace FanXing.FightDemo
             RectTransformUtility.ScreenPointToLocalPointInRectangle(uiCanvas.transform as RectTransform, screenPos, targetCamera, out uiPos);
 
             // 更新 UI 元素位置
-            unitSimpleDescription.GetComponent<RectTransform>().anchoredPosition = uiPos;
-
+            uI_UnitSimpleDescription.GetComponent<RectTransform>().anchoredPosition = uiPos;
+            if(uI_UnitSimpleDescription.isShowing)return;
+            uI_UnitSimpleDescription.ExecuteCommand(UI_Manager_UnitSimpleDescription.Command.Show);
         }
 
         void Update()
         {
-            if(SelectedObjectAnimation == null)
-            {
-                unitSimpleDescription.gameObject.SetActive(false);
-            }  
+            
         }
     }
 }

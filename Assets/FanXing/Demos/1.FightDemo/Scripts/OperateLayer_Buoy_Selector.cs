@@ -10,9 +10,15 @@ namespace FanXing.FightDemo
         public void UpdateSelector()
         {
             RaycastHit hit;
-            if (!Physics.Raycast(selector.transform.position, Vector3.down, out hit, Mathf.Infinity))return;
-            TemporaryStorage.InvokeOnBuoyStateSelected(hit.collider.gameObject);
+            if (!Physics.Raycast(selector.transform.position, Vector3.down, out hit, Mathf.Infinity))
+            {
+                TemporaryStorage.InvokeOnHideUnitDescription();
+            }else
+            {
+                TemporaryStorage.InvokeOnBuoyStateSelected(hit.collider.gameObject);
             // Debug.Log(hit.point);
+            }
+            
         }
     }
 }

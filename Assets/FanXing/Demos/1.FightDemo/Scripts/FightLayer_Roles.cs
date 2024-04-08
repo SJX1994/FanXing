@@ -21,17 +21,30 @@ namespace FanXing.FightDemo
                 targetRole = roles.Find(role => role == targetRole);
                 if(!targetRole)return;
                 TemporaryStorage.BuoySelectingObject = targetRole.gameObject;
-                
             };
             TemporaryStorage.OnConfirmKeyPressed += () =>
             {
                 if(TemporaryStorage.BuoySelectingObject == null)return;
+                TemporaryStorage.CurrentBuoy_RoleType = TemporaryStorage.BuoySelectingObject.GetComponent<FightLayer_Roles_Role>().roleInfo.RoleType;
                 TemporaryStorage.BuoySelectedObject = TemporaryStorage.BuoySelectingObject;
                 TemporaryStorage.BuoySelectingObject = null;
                 temp_UI_Manager_DisplayOptions = TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role>().selectTester.GetUI_Manager_DisplayOptions();
+                if(TemporaryStorage.BuoySelectedObject.TryGetComponent(out FightLayer_Roles_Role_Move_Flight roleMove))
+                {
+                    roleMove.m_From_Flight = roleMove.transform.position;
+                    roleMove.m_Destination_Flight = TemporaryStorage.BuoyPosition;
+                    roleMove.m_Destination_Flight.y = roleMove.transform.position.y;
+                }
                 TemporaryStorage.InvokeOnRestBuoyPosition(TemporaryStorage.BuoySelectedObject.transform.position);
                 TemporaryStorage.InvokeOnShow_UI_Manager(TemporaryStorage.BuoySelectedObject,temp_UI_Manager_DisplayOptions);
-                TemporaryStorage.InvokeOnMoveFinish(TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role_Move>());
+                TemporaryStorage.InvokeOnMoveFinish(TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role_Move_Ground>());
+            };
+            TemporaryStorage.OnCancelKeyPressed += () =>
+            {
+                if(TemporaryStorage.BuoySelectingObject == null)return;
+                TemporaryStorage.InvokeOnRestBuoyPosition(TemporaryStorage.BuoySelectedObject.transform.position);
+                TemporaryStorage.InvokeOnMoveFinish(TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role_Move_Ground>());
+                TemporaryStorage.InvokeOnMoveFinish(TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role_Move_Flight>());
             };
         }
         void ShowRoleDescription(GameObject go)

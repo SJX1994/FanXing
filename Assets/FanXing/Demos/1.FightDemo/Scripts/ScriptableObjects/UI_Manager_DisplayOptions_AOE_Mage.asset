@@ -15,3 +15,21 @@ MonoBehaviour:
   CommandSelectSystem_Button_Fight: 1
   CommandSelectSystem_Button_Move: 1
   CommandSelectSystem_Button_Defense: 0
+  ActionUI_Button_0:
+    Display: 1
+    Content: {fileID: 0}
+  ActionUI_Button_1:
+    Display: 1
+    Content: {fileID: 0}
+  ActionUI_Button_2:
+    Display: 0
+    Content: {fileID: 0}
+  ActionUI_Button_3:
+    Display: 0
+    Content: {fileID: 0}
+  ActionUI_Button_4:
+    Display: 0
+    Content: {fileID: 0}
+  ActionUI_Button_5:
+    Display: 0
+    Content: {fileID: 0}

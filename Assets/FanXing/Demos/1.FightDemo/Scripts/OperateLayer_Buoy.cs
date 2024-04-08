@@ -53,7 +53,7 @@ namespace FanXing.FightDemo
             
             float moveX = Input.GetAxis("Horizontal"); // A 和 D 键
             float moveZ = Input.GetAxis("Vertical"); // W 和 S 键
-
+            TemporaryStorage.BuoyPosition = buoySelector.transform.position;
             Vector3 movement = new Vector3(moveX, 0f, moveZ) * moveSpeed * Time.deltaTime;
             buoySelector.transform.Translate(movement, Space.Self);
             switch (currentState)
@@ -113,6 +113,30 @@ namespace FanXing.FightDemo
             TemporaryStorage.BuoyState = currentState;
         }
         private void MoveOmeningDisplay()
+        {
+            switch(TemporaryStorage.CurrentBuoy_RoleType)
+            {
+                case ScriptableObject_Role_Infomation.RoleType.Flight:
+                    MoveOmeningDisplay_Flight();
+                    break;
+                case ScriptableObject_Role_Infomation.RoleType.LongDistance:
+                    MoveOmeningDisplay_Ground();
+                    break;
+                default:
+                    break;
+            }
+            // Vector3 closestPoint =  FindClosestPoint(TemporaryStorage.PathPoints, buoySelector.transform.position);
+            // DrawParabola(buoySelector.transform.position, closestPoint);
+            // path_end.gameObject.SetActive(true);
+            // path_end.position = closestPoint;
+            // TemporaryStorage.Path_end_position = closestPoint;
+        }
+        private void MoveOmeningDisplay_Flight()
+        {
+            path_end.gameObject.SetActive(true);
+            path_end.position = TemporaryStorage.BuoyPosition;
+        }
+        private void MoveOmeningDisplay_Ground()
         {
             Vector3 closestPoint =  FindClosestPoint(TemporaryStorage.PathPoints, buoySelector.transform.position);
             DrawParabola(buoySelector.transform.position, closestPoint);

@@ -14,6 +14,8 @@ namespace FanXing.FightDemo
         public static List<Vector3> PathPoints;
         public static Vector3 Path_end_position;
         public static Vector3 Path_start_position;
+        public static ScriptableObject_Role_Infomation.RoleType CurrentBuoy_RoleType;
+        public static Vector3 BuoyPosition;
         public static OperateLayer_Buoy.State BuoyState
         {
             get => _buoyState;
@@ -69,12 +71,32 @@ namespace FanXing.FightDemo
         {
             OnShow_UI_Manager?.Invoke(go,scriptableObject_UI_Manager_DisplayOptions);
         }
+        public static event Action OnShow_UI_MovePreparation;
+        public static void InvokeOnShow_UI_MovePreparation()
+        {
+            OnShow_UI_MovePreparation?.Invoke();
+        }
+        public static event Action OnHide_UI_MovePreparation;
+        public static void InvokeOnHide_UI_MovePreparation()
+        {
+            OnHide_UI_MovePreparation?.Invoke();
+        }
         public static event Action<GameObject,ScriptableObject_UnitSimpleDescription> OnShowUnitDescription;
         public static void InvokeOnShowUnitDescription(GameObject go,ScriptableObject_UnitSimpleDescription scriptableObject_UnitSimpleDescription)
         {
             OnShowUnitDescription?.Invoke(go,scriptableObject_UnitSimpleDescription);
         }
-        
+        public static event Action OnHideUnitDescription;
+        public static void InvokeOnHideUnitDescription()
+        {
+            OnHideUnitDescription?.Invoke();
+        }
+        public static event Action<bool> OnOperatePostProcessing;
+        public static void InvokeOnOperatePostProcessing(bool active)
+        {
+            OnOperatePostProcessing?.Invoke(active);
+        }
+      
         public enum UnitName
         {
             AOE_Mage,
@@ -109,7 +131,12 @@ namespace FanXing.FightDemo
             OnShowUnitDescription = null;
             OnShow_UI_Manager = null;
             UI_Camera = null;
-            
+            OnHide_UI_MovePreparation = null;
+            OnHideUnitDescription = null;
+            OnShow_UI_MovePreparation = null;
+            OnOperatePostProcessing = null;
+            BuoyPosition = Vector3.zero;
+            CurrentBuoy_RoleType = ScriptableObject_Role_Infomation.RoleType.Null;
         }
     }
 }

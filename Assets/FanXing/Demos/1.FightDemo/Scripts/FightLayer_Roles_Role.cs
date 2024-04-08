@@ -15,6 +15,7 @@ public class FightLayer_Roles_Role : MonoBehaviour
         Moveing,
     }
     public FightLayer_Roles_Role_Move roleMove;
+    public FightLayer_Roles_Role_Info roleInfo;
     [SerializeField] FightLayer_Roles_Role_Status roleStatus;
     public FightLayer_Roles_Role_SelectTester selectTester;
 
@@ -24,17 +25,21 @@ public class FightLayer_Roles_Role : MonoBehaviour
 
         TemporaryStorage.OnMovePreparation += (who,path) =>	
 		{
+            if(who != TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role_Move>())return;
+            TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role>().ExecuteCommand(Command.MovePreparation);
 			who.OnMovePreparation(path);
 		};
         TemporaryStorage.OnMove += (who,graph,path,from,to) =>
         {
-			
-            ExecuteCommand(Command.Moveing);
-            who.OnMove(graph,path,from,to);
+            if(who != TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role_Move>())return;
+            TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role>().ExecuteCommand(Command.Moveing);
+            who.OnMove(who,graph,path,from,to);
             
         };
         TemporaryStorage.OnMoveFinish += (who) =>
 		{
+            if(!who || who.gameObject != gameObject)return;
+            who.transform.GetComponent<FightLayer_Roles_Role>().ExecuteCommand(Command.Null);
             who.OnMoveFinish();
 		};
        
@@ -50,6 +55,7 @@ public class FightLayer_Roles_Role : MonoBehaviour
                 roleStatus.currentState = FightLayer_Roles_Role_Status.State.MovePreparation;
                 break;
             case Command.Moveing:
+                
                 roleStatus.currentState = FightLayer_Roles_Role_Status.State.Moveing;
                 break;
             default:
@@ -59,10 +65,12 @@ public class FightLayer_Roles_Role : MonoBehaviour
     }
     void Update()
     {
+        // if(TemporaryStorage.BuoySelectedObject != gameObject)return;
         roleStatus.UpdateStatusLogic();
         switch (roleStatus.currentState)
         {
             case FightLayer_Roles_Role_Status.State.Idle:
+                Pathfinding_Idle_Display();
                 break;
             case FightLayer_Roles_Role_Status.State.MovePreparation:
                 Pathfinding_MovePreparation_Display();
@@ -75,13 +83,18 @@ public class FightLayer_Roles_Role : MonoBehaviour
                 break;
         }
     }
+    private void Pathfinding_Idle_Display()
+    {
+        roleMove.InitDisplay();
+    }
     private void Pathfinding_MovePreparation_Display()
     {
-
         TemporaryStorage.Path_start_position = transform.position;
     }
     private void Pathfinding_Moveing_Display()
     {
+        
+        if(!roleMove.m_IsMoving)return;
         roleMove.UpdateMoving();
     }
 }

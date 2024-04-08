@@ -22,41 +22,25 @@ public class GameControl : MonoBehaviour
     {
         TemporaryStorage.UI_Camera = uiCamera;
         fightPaths.GetPathVertexs();
-        uI_Manager.UI_CommandSelect.btn_Command_Move.onClick.AddListener(() =>
+        TemporaryStorage.OnShow_UI_MovePreparation += () =>
         {
-            if(TemporaryStorage.BuoySelectingObject == null)return;
+            if(TemporaryStorage.BuoySelectedObject == null)return;
+            TemporaryStorage.InvokeOnRestBuoyPosition(TemporaryStorage.BuoySelectedObject.transform.position);
             operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.MoveOmen);
             pathfinding.ExecuteCommand(FightLayer_Pathfinding.Command.MovePreparation);
-            TemporaryStorage.BuoySelectingObject.GetComponent<FightLayer_Roles_Role>().ExecuteCommand(FightLayer_Roles_Role.Command.MovePreparation);
-           
-        });
-        uI_Manager.UI_CommandSelect.btn_Command_Fight.onClick.AddListener(() =>
+            TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role>().ExecuteCommand(FightLayer_Roles_Role.Command.MovePreparation);
+            
+        };
+        TemporaryStorage.OnHide_UI_MovePreparation += () =>
         {
-            //operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.Fight);
-        });
-        uI_Manager.UI_CommandSelect.btn_Command_Defense.onClick.AddListener(() =>
-        {
-            //operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.Reset);
-        });
-        // TemporaryStorage.OnCancelKeyPressed += () =>
-        // {
-        //     operateBuoy.ExecuteCommand(OperateBuoy.Command.Reset);
-        //     operateBuoy.ExecuteCommand(OperateBuoy.Command.Null);
-        //     FindObjectOfType<Role>().ExecuteCommand(Role.Command.Null);
-        //     FindObjectOfType<Pathfinding>().ExecuteCommand(Pathfinding.Command.Null);
-        //     uI_Manager.UI_CommandSelect.Hide();
-        // };
-        // TemporaryStorage.OnBuoySelectedObject += (go) =>
-        // {
-        //     if(go.TryGetComponent(out SelectTester selectTest))
-        //     {
-        //         if(temp_unitSimpleDescription != selectTest.GetUnitSimpleDescription())
-        //         {
-        //             temp_unitSimpleDescription = selectTest.GetUnitSimpleDescription();
-        //         }
-        //         uI_Manager.ShowUnitDescription(go,temp_unitSimpleDescription);
-        //     }
-        // };
+            if(TemporaryStorage.BuoySelectedObject == null)return;
+            TemporaryStorage.InvokeOnRestBuoyPosition(TemporaryStorage.BuoySelectedObject.transform.position);
+            operateBuoy.ExecuteCommand(OperateLayer_Buoy.Command.Null);
+            pathfinding.ExecuteCommand(FightLayer_Pathfinding.Command.Null);
+            TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role>().ExecuteCommand(FightLayer_Roles_Role.Command.Null);
+            
+        };
+        
     }
     void OnDestroy()
     {
