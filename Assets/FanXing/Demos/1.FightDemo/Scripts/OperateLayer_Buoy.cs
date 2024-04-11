@@ -16,14 +16,14 @@ namespace FanXing.FightDemo
             Null,
             MoveOmen,
             MoveExecute,
-            Fight
+            Action
         }
         public enum State
         {
             Idle,
             MoveOmen,
             MoveExecute,
-            Fighting
+            Action
         }
         public State currentState;
         private float timer = 0f;
@@ -43,6 +43,10 @@ namespace FanXing.FightDemo
                         break;
                 }
             };
+            TemporaryStorage.OnBuoyStateChanged += (state) =>
+            {
+                currentState = state;
+            };
             TemporaryStorage.OnRestBuoyPosition += (position) =>
             {
                 buoySelector.transform.position = new Vector3(position.x, buoySelector.transform.position.y, position.z);
@@ -50,13 +54,14 @@ namespace FanXing.FightDemo
         }
         void Update()
         {
-            
+            // Debug.Log("OperateLayer_Buoy"+ TemporaryStorage.BuoyState);
+
             float moveX = Input.GetAxis("Horizontal"); // A 和 D 键
             float moveZ = Input.GetAxis("Vertical"); // W 和 S 键
             TemporaryStorage.BuoyPosition = buoySelector.transform.position;
             Vector3 movement = new Vector3(moveX, 0f, moveZ) * moveSpeed * Time.deltaTime;
             buoySelector.transform.Translate(movement, Space.Self);
-            switch (currentState)
+            switch (TemporaryStorage.BuoyState)
             {
                 case State.Idle:
                     buoySelector.UpdateSelector();
@@ -73,7 +78,8 @@ namespace FanXing.FightDemo
                     }
                     
                     break;
-                case State.Fighting:
+                case State.Action:
+                    buoySelector.UpdateSelector();
                     break;
                 
                 default:
@@ -94,8 +100,8 @@ namespace FanXing.FightDemo
                 case Command.MoveExecute:
                     TransitionToState(State.MoveExecute);
                     break;
-                case Command.Fight:
-                    TransitionToState(State.Fighting);
+                case Command.Action:
+                    TransitionToState(State.Action);
                     break;
                 default:
                     Debug.LogError("Invalid command");

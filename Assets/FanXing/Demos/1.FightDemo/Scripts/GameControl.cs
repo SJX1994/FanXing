@@ -45,6 +45,7 @@ public class GameControl : MonoBehaviour
     void OnDestroy()
     {
         TemporaryStorage.ClearValues();
+        DOTween.KillAll();
     }
 }
 }

@@ -30,10 +30,7 @@ namespace FanXing.FightDemo
         void Show_UI_CommandSelect_Data(GameObject gameObject,ScriptableObject_UI_Manager_DisplayOptions displayOptions)
         {
             if(TemporaryStorage.BuoyState != OperateLayer_Buoy.State.Idle)return;
-            UI_CommandSelect.btn_Command_Move.interactable = displayOptions.CommandSelectSystem_Button_Move;
-            UI_CommandSelect.btn_Command_Action.interactable = displayOptions.CommandSelectSystem_Button_Fight;
-            UI_CommandSelect.btn_Command_Defense.interactable = displayOptions.CommandSelectSystem_Button_Defense;
-            
+            uI_CommandSelect.SetData(gameObject,displayOptions);
             uI_CommandSelect.ExecuteCommand(UI_Manager_CommandSelect.Command.Idle);
         }
         void Show_UI_UnitSimpleDescription(GameObject gameObject,ScriptableObject_UnitSimpleDescription scriptableObject_unitSimpleDescription)

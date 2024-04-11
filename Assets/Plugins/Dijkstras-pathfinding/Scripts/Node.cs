@@ -39,7 +39,7 @@ public class Node : MonoBehaviour
 
 	void OnValidate ()
 	{
-		
+		if (m_Connections == null)return;
 		// Removing duplicate elements
 		m_Connections = m_Connections.Distinct ().ToList ();
 	}

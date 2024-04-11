@@ -17,10 +17,10 @@ MonoBehaviour:
   CommandSelectSystem_Button_Defense: 0
   ActionUI_Button_0:
     Display: 1
-    Content: {fileID: 0}
+    Content: {fileID: 11400000, guid: 8482f9a616867b14fa4265a1fad6808c, type: 2}
   ActionUI_Button_1:
     Display: 1
-    Content: {fileID: 0}
+    Content: {fileID: 11400000, guid: 57459502b13acff4d997d301d74dc3f5, type: 2}
   ActionUI_Button_2:
     Display: 0
     Content: {fileID: 0}

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 namespace FanXing.FightDemo
 {
@@ -15,8 +16,12 @@ namespace FanXing.FightDemo
                 TemporaryStorage.InvokeOnHideUnitDescription();
             }else
             {
-                TemporaryStorage.InvokeOnBuoyStateSelected(hit.collider.gameObject);
-            // Debug.Log(hit.point);
+                switch (TemporaryStorage.BuoyState)
+                {
+                    case OperateLayer_Buoy.State.Idle:
+                        TemporaryStorage.InvokeOnBuoyStateSelected(hit.collider.gameObject);
+                        break;
+                }
             }
             
         }

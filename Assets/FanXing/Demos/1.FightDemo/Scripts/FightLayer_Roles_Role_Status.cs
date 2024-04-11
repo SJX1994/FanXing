@@ -34,7 +34,7 @@ namespace FanXing.FightDemo
         }
         void Pathfinding_MovePreparation_Logic()
         {
-            
+            TemporaryStorage.Path_start_position = transform.position;
         }
         void Pathfinding_Moveing_Logic()
         {

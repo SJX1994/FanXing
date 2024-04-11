@@ -11,7 +11,7 @@ namespace FanXing.FightDemo
         ColorAdjustments colorAdjustments;
         void Start()
         {
-            TemporaryStorage.OnOperatePostProcessing += (b) =>
+            TemporaryStorage.OnOperating += (b) =>
             {
                 if(postProcessing.profile.TryGet(out colorAdjustments))
                 {

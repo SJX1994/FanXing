@@ -18,7 +18,7 @@ public class FightLayer_Roles_Role : MonoBehaviour
     public FightLayer_Roles_Role_Info roleInfo;
     [SerializeField] FightLayer_Roles_Role_Status roleStatus;
     public FightLayer_Roles_Role_SelectTester selectTester;
-
+    private bool operating = false;
     void Start()
     {
         ExecuteCommand(Command.Null);
@@ -42,7 +42,10 @@ public class FightLayer_Roles_Role : MonoBehaviour
             who.transform.GetComponent<FightLayer_Roles_Role>().ExecuteCommand(Command.Null);
             who.OnMoveFinish();
 		};
-       
+        TemporaryStorage.OnOperating += (b) =>
+        {
+            operating = b;
+        };
     }
     public void ExecuteCommand(Command command)
     {
@@ -55,7 +58,6 @@ public class FightLayer_Roles_Role : MonoBehaviour
                 roleStatus.currentState = FightLayer_Roles_Role_Status.State.MovePreparation;
                 break;
             case Command.Moveing:
-                
                 roleStatus.currentState = FightLayer_Roles_Role_Status.State.Moveing;
                 break;
             default:
@@ -65,8 +67,10 @@ public class FightLayer_Roles_Role : MonoBehaviour
     }
     void Update()
     {
+        
         // if(TemporaryStorage.BuoySelectedObject != gameObject)return;
         roleStatus.UpdateStatusLogic();
+        if(operating)return;
         switch (roleStatus.currentState)
         {
             case FightLayer_Roles_Role_Status.State.Idle:

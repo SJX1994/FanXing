@@ -21,6 +21,7 @@ namespace FanXing.FightDemo
             get => _buoyState;
             set
             {
+                if(_buoyState == value)return;
                 _buoyState = value;
                 OnBuoyStateChanged?.Invoke(value);
             }
@@ -91,12 +92,21 @@ namespace FanXing.FightDemo
         {
             OnHideUnitDescription?.Invoke();
         }
-        public static event Action<bool> OnOperatePostProcessing;
-        public static void InvokeOnOperatePostProcessing(bool active)
+        public static event Action<bool> OnOperating;
+        public static void InvokeOnOperating(bool active)
         {
-            OnOperatePostProcessing?.Invoke(active);
+            OnOperating?.Invoke(active);
         }
-      
+        public static event Action<GameObject,ScriptableObject_Action> OnActionSelected;
+        public static void InvokeOnActionSelected(GameObject who_been_selected,ScriptableObject_Action scriptableObject_Action)
+        {
+            OnActionSelected?.Invoke(who_been_selected,scriptableObject_Action);
+        }
+        public static event Action<GameObject> OnActionCanceled;
+        public static void InvokeOnActionCanceled(GameObject who_been_selected)
+        {
+            OnActionCanceled?.Invoke(who_been_selected);
+        }
         public enum UnitName
         {
             AOE_Mage,
@@ -134,9 +144,12 @@ namespace FanXing.FightDemo
             OnHide_UI_MovePreparation = null;
             OnHideUnitDescription = null;
             OnShow_UI_MovePreparation = null;
-            OnOperatePostProcessing = null;
+            OnOperating = null;
             BuoyPosition = Vector3.zero;
             CurrentBuoy_RoleType = ScriptableObject_Role_Infomation.RoleType.Null;
+            OnActionSelected = null;
+            OnActionCanceled = null;
         }
+        
     }
 }

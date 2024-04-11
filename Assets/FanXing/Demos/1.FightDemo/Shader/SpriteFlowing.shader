@@ -6,16 +6,24 @@ Shader "Custom/SpriteFlowEmissionShader"
         _FlowSpeed ("Flow Speed", Float) = 1
         _EmissionColor ("Emission Color", Color) = (1,1,1,1)
         _EmissionStrength ("Emission Strength", Float) = 1
+        [PerRendererData] _Alpha ("Alpha", Range(0,1)) = 1.0
     }
     SubShader
     {
         Cull Off
-        Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+
+        Tags { 
+        "Queue"="Transparent"
+        "IgnoreProjector"="True"
+        "RenderType"="Transparent" 
+        }
+
         Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
             CGPROGRAM
+            #pragma multi_compile_instancing
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
@@ -38,6 +46,7 @@ Shader "Custom/SpriteFlowEmissionShader"
             float _FlowSpeed;
             float4 _EmissionColor;
             float _EmissionStrength;
+            half _Alpha;
 
             v2f vert (appdata_t v)
             {
@@ -52,10 +61,9 @@ Shader "Custom/SpriteFlowEmissionShader"
             {
                 float2 offset = float2(_FlowSpeed * _Time.y, 0);
                 fixed4 col = tex2D(_MainTex, i.texcoord + offset) * i.color;
-
+                col.a *= _Alpha;
                 fixed4 emission = _EmissionColor * _EmissionStrength;
                 col.rgb += emission.rgb;
-
                 return col;
             }
             ENDCG
