@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using System;
 
 namespace FanXing.FightDemo
 {
-    public class FightLayer_Roles_Role_Action_AOEMage : FightLayer_Roles_Role_Action
+    public class FightLayer_Roles_Role_Action_DodgeTank : FightLayer_Roles_Role_Action
     {
         [SerializeField] Color selectedTargetColor , unselectedTargetColor;
         [SerializeField] LineRenderer lineRenderer_action;
         [SerializeField] int lineRenderer_segments = 50;
+        [SerializeField] GameObject squareArea;
+        [SerializeField] Transform skillEndPoint;
         bool updatePreparationDisplay = false;
         List<LineRenderer> tempLineRenderers = new();
         Dictionary<GameObject,bool> targetCollections = new();
@@ -39,11 +40,13 @@ namespace FanXing.FightDemo
                 {
                     if(!item.Key.TryGetComponent<FightLayer_Roles_Role_BeenSelected>(out var b))continue;
                     b.OnSelect = false;
+
                 }
                 targetCollections = value;
             }
         }
-        Vector3 relaseCenterOfCircle = Vector3.zero;
+        float rectangleWidth; // 矩形的宽度
+        BoxCollider squearBoxCollider;
         // 技能取消
         protected override void ActionCanceled()
         {
@@ -59,15 +62,13 @@ namespace FanXing.FightDemo
         protected override void ActionRelease()
         {
             base.ActionRelease();
-            
             for(int i = scriptableObject_Action.MissileCount; i>0; i--)
             {
-                Vector3 targetPosition = RandomPointInCircle(relaseCenterOfCircle,scriptableObject_Action.Range);
+                Vector3 targetPosition = skillEndPoint.position;
                 TemporaryStorage.InvokeOnGenerateMissile(scriptableObject_Action,transform.position,targetPosition);
             }
             TemporaryStorage.InvokeOnCoolDown(this,scriptableObject_Action.cooldown);
             InitDisplay();
-            
         }
         void CreateSkillRange()
         {
@@ -87,17 +88,16 @@ namespace FanXing.FightDemo
                     // targetList = CreatePointToPoint();
                     break;
                 case ScriptableObject_Action.Action.CircleShape:
-                    CreateCircleShape_Logic();
-                    CreateCircleShape_Display();
                     break;
                 case ScriptableObject_Action.Action.SquareShape:
-                    // targetList = CreateSquareShape();
+                    CreateSquareShape_Logic();
+                    CreateSquareShape_Display();
                     break;
                 case ScriptableObject_Action.Action.WholeMap:
                     // targetList = CreateWholeMap();
                     break;
             }
-            
+           
         }
         void InitDisplay()
         {
@@ -106,21 +106,33 @@ namespace FanXing.FightDemo
             updatePreparationDisplay = false;
             tempLineRenderers.ForEach(lr=>Destroy(lr.gameObject));
             tempLineRenderers.Clear();
-            foreach (var item in TargetCollections)
-            {
-                if(!item.Key.TryGetComponent<FightLayer_Roles_Role_BeenSelected>(out var b))continue;
-                b.OnSelect = false;
-            }
             TargetCollections.Clear();
         }
-        void CreateSelfCircleShape_Display()
+        void CreateSquareShape_Logic()
         {
-            
+            updatePreparationDisplay = true;
+            rectangleWidth = scriptableObject_Action.Range;
+            if(!squearBoxCollider)
+            {
+                squearBoxCollider = squareArea.GetComponentInChildren<BoxCollider>();
+            }
+            squearBoxCollider.size = new Vector3(squearBoxCollider.size.x,squearBoxCollider.size.y,rectangleWidth);
+        }
+        void CreateSquareShape_Display()
+        {
             LineRenderer lineRenderer_temp_for_Self = Instantiate(lineRenderer_action,transform);
             lineRenderer_temp_for_Self.positionCount = lineRenderer_segments+1;
             lineRenderer_temp_for_Self.loop = true;
-            tempLineRenderers.Add(lineRenderer_temp_for_Self);
+            tempLineRenderers.Add(lineRenderer_temp_for_Self); // 0
+            CreateSelfCircleShape_Display(lineRenderer_temp_for_Self);
 
+            LineRenderer lineRenderer_temp_for_Square = Instantiate(lineRenderer_action,transform);
+            lineRenderer_temp_for_Square.positionCount = 5;
+            lineRenderer_temp_for_Square.useWorldSpace = true;
+            tempLineRenderers.Add(lineRenderer_temp_for_Square); // 1
+        }
+        void CreateSelfCircleShape_Display(LineRenderer lineRenderer_temp_for_Self)
+        {
             float x;
             float z;
             float angle = 20f;
@@ -131,55 +143,6 @@ namespace FanXing.FightDemo
                 lineRenderer_temp_for_Self.SetPosition(i, new Vector3(x, 1.6f, z) + transform.position);
                 angle += 360f / lineRenderer_segments;
             }
-        }
-        void CreateCircleShape_Display()
-        {
-            LineRenderer lineRenderer_temp_for_Ranger = Instantiate(lineRenderer_action,transform);
-            lineRenderer_temp_for_Ranger.positionCount = lineRenderer_segments+1;
-            lineRenderer_temp_for_Ranger.loop = true;
-            tempLineRenderers.Add(lineRenderer_temp_for_Ranger);
-            LineRenderer lineRenderer_temp_for_Path = Instantiate(lineRenderer_action,transform);
-            lineRenderer_temp_for_Path.loop = false;
-            tempLineRenderers.Add(lineRenderer_temp_for_Path);
-            CreateSelfCircleShape_Display();
-        }
-        void CreateCircleShape_Logic()
-        {
-            updatePreparationDisplay = true;
-        }
-        void UpdateCircleShape_Logic(Vector3 circleCenter)
-        {
-            if(!updatePreparationDisplay)return;
-            Vector3 centerOfCircle = circleCenter;
-            relaseCenterOfCircle = circleCenter;
-            Collider[] colliders = Physics.OverlapSphere(centerOfCircle, scriptableObject_Action.Range);
-            TargetCollections = colliders.ToDictionary(collider => collider.gameObject, playedAnimation => false);
-        }
-        void UpdateCircleShape_Display(LineRenderer lineRenderer,Vector3 circleCenter,int lineRenderer_segments = 50)
-        {
-            if(!updatePreparationDisplay)return;
-            float x;
-            float z;
-            float angle = 20f;
-            for (int i = 0; i < (lineRenderer_segments + 1); i++)
-            {
-                x = Mathf.Sin(Mathf.Deg2Rad * angle) * scriptableObject_Action.Range;
-                z = Mathf.Cos(Mathf.Deg2Rad * angle) * scriptableObject_Action.Range;
-                lineRenderer.SetPosition(i, new Vector3(x+circleCenter.x,circleCenter.y, z+circleCenter.z));
-                angle += 360f / lineRenderer_segments;
-            }
-            // Debug.Log(Collections.Count);
-            if(TargetCollections.Count > 0)
-            {
-                lineRenderer.sharedMaterial.SetColor("_EmissionColor", selectedTargetColor);
-                lineRenderer.sharedMaterial.SetFloat("_Alpha", selectedTargetColor.a);
-            }else
-            {
-                lineRenderer.sharedMaterial.SetColor("_EmissionColor", unselectedTargetColor);
-                lineRenderer.sharedMaterial.SetFloat("_Alpha", unselectedTargetColor.a);
-            }
-
-            
         }
         void DrawParabola(LineRenderer lineRenderer_path, Vector3 pointA, Vector3 pointB,int numberOfPoints)
         {
@@ -197,7 +160,7 @@ namespace FanXing.FightDemo
             lineRenderer_path.positionCount = numberOfPoints;
             lineRenderer_path.SetPositions(positions);
         }
-       
+        
         void Update()
         {
             if(updatePreparationDisplay)
@@ -217,31 +180,72 @@ namespace FanXing.FightDemo
                         // UpdatePointToPoint();
                         break;
                     case ScriptableObject_Action.Action.CircleShape:
-                        Vector3 circleCenter = new Vector3(TemporaryStorage.BuoyPosition.x,0.6f,TemporaryStorage.BuoyPosition.z);
-                        UpdateCircleShape_Logic(circleCenter);
-                        UpdateCircleShape_Display(tempLineRenderers[0],circleCenter,lineRenderer_segments);
-                        DrawParabola(tempLineRenderers[1],transform.position,circleCenter,10);
                         break;
                     case ScriptableObject_Action.Action.SquareShape:
-                        // UpdateSquareShape();
+                        UpdateSquareShape();
                         break;
                     case ScriptableObject_Action.Action.WholeMap:
                         // UpdateWholeMap();
                         break;
                 }
             }
-            
         }
-        public Vector3 RandomPointInCircle(Vector3 center, float radius)
+        void UpdateSquareShape()
         {
-            float angle = UnityEngine.Random.Range(0f, Mathf.PI * 2); // 随机角度
-            float distance = Mathf.Sqrt(UnityEngine.Random.Range(0f, 1f)) * radius; // 随机距离
+            
+            UpdateSquareShape_Display(tempLineRenderers[1]);
+            UpdateSquareShape_Logic(tempLineRenderers[1]);
+            // DrawParabola();
+        }
+        void UpdateSquareShape_Logic(LineRenderer lineRenderer)
+        {
+            // 计算需要对准的方向
+            Vector3 direction = (TemporaryStorage.BuoyPosition - transform.position).normalized;
 
-            float x = center.x + distance * Mathf.Cos(angle);
-            float z = center.z + distance * Mathf.Sin(angle);
-            float y = center.y; // 在XZ平面上生成，所以y坐标保持不变
+            // 将方向中的X和Z分量赋值给新的向量
+            Vector3 targetDirection = new Vector3(direction.x, 0f, direction.z).normalized;
 
-            return new Vector3(x, y, z);
+            // 计算需要旋转的角度
+            Quaternion targetRotation = targetDirection ==Vector3.zero? Quaternion.identity :Quaternion.LookRotation(targetDirection, Vector3.up);
+
+            // 平滑过渡旋转
+            squareArea.transform.rotation = Quaternion.Lerp(squareArea.transform.rotation, targetRotation, Time.deltaTime * 9.2f);
+
+            // 碰撞计算
+            Collider[] colliders = Physics.OverlapBox(squearBoxCollider.bounds.center, squearBoxCollider.bounds.extents, squearBoxCollider.transform.rotation);
+            colliders = colliders.Where(
+                collider => 
+                collider.gameObject.transform.parent.gameObject != gameObject
+                && 
+                collider.gameObject != squearBoxCollider.gameObject 
+                ).ToArray();
+         
+            TargetCollections = colliders.ToDictionary(collider => collider.gameObject, playedAnimation => false);
+        }
+        void UpdateSquareShape_Display(LineRenderer lineRenderer)
+        {
+            
+
+            Vector3 bottomLeft = squearBoxCollider.transform.TransformPoint(squearBoxCollider.center + new Vector3(-squearBoxCollider.size.x / 2, -squearBoxCollider.size.y / 2, -squearBoxCollider.size.z / 2));
+            Vector3 bottomRight = squearBoxCollider.transform.TransformPoint(squearBoxCollider.center + new Vector3(squearBoxCollider.size.x / 2, -squearBoxCollider.size.y / 2, -squearBoxCollider.size.z / 2));
+            Vector3 topLeft = squearBoxCollider.transform.TransformPoint(squearBoxCollider.center + new Vector3(-squearBoxCollider.size.x / 2, -squearBoxCollider.size.y / 2, squearBoxCollider.size.z / 2));
+            Vector3 topRight = squearBoxCollider.transform.TransformPoint(squearBoxCollider.center + new Vector3(squearBoxCollider.size.x / 2, -squearBoxCollider.size.y / 2, squearBoxCollider.size.z / 2));
+            lineRenderer.SetPosition(0, bottomLeft);
+            lineRenderer.SetPosition(1, bottomRight);
+            lineRenderer.SetPosition(2, topRight);
+            lineRenderer.SetPosition(3, topLeft);
+            lineRenderer.SetPosition(4, bottomLeft);
+            
+            
+            if(TargetCollections.Count > 0)
+            {
+                lineRenderer.sharedMaterial.SetColor("_EmissionColor", selectedTargetColor);
+                lineRenderer.sharedMaterial.SetFloat("_Alpha", selectedTargetColor.a);
+            }else
+            {
+                lineRenderer.sharedMaterial.SetColor("_EmissionColor", unselectedTargetColor);
+                lineRenderer.sharedMaterial.SetFloat("_Alpha", unselectedTargetColor.a);
+            }
         }
     }
 }

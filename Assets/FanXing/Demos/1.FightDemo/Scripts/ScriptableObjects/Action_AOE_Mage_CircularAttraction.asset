@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Action_AOE_Mage_CircularAttraction
   m_EditorClassIdentifier: 
   IsUnlocked: 1
-  ActionName: "\u8303\u56F4\u5438\u602A"
+  ActionName: "\u5706\u5F62AOE"
   Description: Description
-  Icon: {fileID: 0}
   Cost: 3
   Range: 10
   action: 4
@@ -25,4 +24,7 @@ MonoBehaviour:
   damagePercentage: 0
   shield: 0
   armorPiercing: 0
-  cooldown: 2
+  cooldown: 5
+  Icon: {fileID: 0}
+  Particle: {fileID: 6175131046750277777, guid: 1551d5ea6bf5e594682a65123ae156a3, type: 3}
+  MissileCount: 15

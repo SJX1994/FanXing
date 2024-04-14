@@ -20,6 +20,7 @@ public class GameControl : MonoBehaviour
     private ScriptableObject_UnitSimpleDescription temp_unitSimpleDescription;
     void Start()
     {
+        
         TemporaryStorage.UI_Camera = uiCamera;
         fightPaths.GetPathVertexs();
         TemporaryStorage.OnShow_UI_MovePreparation += () =>
@@ -47,5 +48,6 @@ public class GameControl : MonoBehaviour
         TemporaryStorage.ClearValues();
         DOTween.KillAll();
     }
+    private void OnApplicationQuit() { DOTween.KillAll(); }
 }
 }

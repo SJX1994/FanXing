@@ -16,6 +16,7 @@ namespace FanXing.FightDemo
             Null,
             MoveOmen,
             MoveExecute,
+            ActionExecute,
             Action
         }
         public enum State
@@ -23,6 +24,7 @@ namespace FanXing.FightDemo
             Idle,
             MoveOmen,
             MoveExecute,
+            ActionExecute,
             Action
         }
         public State currentState;
@@ -81,7 +83,14 @@ namespace FanXing.FightDemo
                 case State.Action:
                     buoySelector.UpdateSelector();
                     break;
-                
+                case State.ActionExecute:
+                    timer += Time.deltaTime;
+                    if (timer > 0.3f)
+                    {
+                        timer = 0f;
+                        ExecuteCommand(Command.Null);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -183,18 +192,12 @@ namespace FanXing.FightDemo
             for (int i = 0; i < numberOfPoints; i++)
             {
                 float t = (float)i / (numberOfPoints - 1);
-                positions[i] = CalculateParabolaPoint(pointA, pointB, pointC, t);
+                positions[i] = Shap.CalculateParabolaPoint(pointA, pointB, pointC, t);
             }
 
             lineRenderer_buoy_path.positionCount = numberOfPoints;
             lineRenderer_buoy_path.SetPositions(positions);
         }
         
-
-        private Vector3 CalculateParabolaPoint(Vector3 pointA, Vector3 pointB, Vector3 pointC, float t)
-        {
-            float oneMinusT = 1f - t;
-            return oneMinusT * oneMinusT * pointA + 2f * oneMinusT * t * pointC + t * t * pointB;
-        }
     }
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: UnitSimpleDescription_AOE_Mage
   m_EditorClassIdentifier: 
   selectName: 0
-  selectType: 1
+  selectType: 0
   selectCamp: 1
   HP_max: 300
   HP_current: 288

@@ -5,22 +5,25 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/FanXing/Main/Scripts/View/StartGame/StartGame.unity
     guid: 23dcbe09db6bdd84fb2f7a750ea1a854
-  - enabled: 1
+  - enabled: 0
     path: Assets/FanXing/Main/Scripts/View/ModeSelect/ModeSelect.unity
     guid: c4d76248a8810ec4b8cdd33f18d28853
-  - enabled: 1
+  - enabled: 0
     path: Assets/FanXing/Main/Scripts/View/ModeSelect/Clarify/Clarify.unity
     guid: 8797d872bff922847b9dacbd8d37fa73
-  - enabled: 1
+  - enabled: 0
     path: Assets/FanXing/Main/Scripts/View/ModeSelect/Daily/Daily.unity
     guid: c70e25eb356f3bd498314a0bc16c88df
-  - enabled: 1
+  - enabled: 0
     path: Assets/FanXing/Main/Scripts/View/ModeSelect/Fight/Fight.unity
     guid: fb20f647c1e15204c96243467f2da61e
-  - enabled: 1
+  - enabled: 0
     path: Assets/FanXing/Main/Scripts/View/Logo.unity
     guid: 5cb34f72c9612a547a6aa901180681ec
+  - enabled: 1
+    path: Assets/FanXing/Demos/1.FightDemo/FightDemo_Move.unity
+    guid: cec0789bdd2c82c4389338c8205c50ff
   m_configObjects: {}

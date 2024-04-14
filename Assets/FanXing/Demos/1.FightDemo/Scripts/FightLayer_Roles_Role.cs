@@ -14,6 +14,7 @@ public class FightLayer_Roles_Role : MonoBehaviour
         MovePreparation,
         Moveing,
     }
+    public FightLayer_Roles_Role_ColdDown roleColdDown;
     public FightLayer_Roles_Role_Move roleMove;
     public FightLayer_Roles_Role_Info roleInfo;
     [SerializeField] FightLayer_Roles_Role_Status roleStatus;
@@ -47,6 +48,32 @@ public class FightLayer_Roles_Role : MonoBehaviour
             operating = b;
         };
     }
+    public IEnumerator Countdown( float seconds)
+    {
+        // Debug.Log(role.transform.name + "Countdown started for " + seconds + " seconds");
+        selectTester.gameObject.SetActive(false);
+        roleColdDown.gameObject.SetActive(true);
+        float timer = seconds;
+
+        while (timer > 0f)
+        {
+            if(!operating)
+            {
+                yield return null; // 等待一帧
+                timer -= Time.deltaTime; // 每帧减去已经过的时间
+                float currentSecond = timer; // 更新当前秒数
+                roleColdDown.PropertyBlock_Progress(currentSecond, seconds); // 更新进度条
+            }else
+            {
+                yield return null; // 等待一帧
+            }
+            
+        }
+        // yield return new WaitForSeconds(seconds);
+        // Debug.Log("Countdown finished");
+        selectTester.gameObject.SetActive(true);
+        roleColdDown.gameObject.SetActive(false);
+    }
     public void ExecuteCommand(Command command)
     {
         switch (command)
@@ -65,12 +92,13 @@ public class FightLayer_Roles_Role : MonoBehaviour
                 break;
         }
     }
+
     void Update()
     {
         
         // if(TemporaryStorage.BuoySelectedObject != gameObject)return;
         roleStatus.UpdateStatusLogic();
-        if(operating)return;
+        
         switch (roleStatus.currentState)
         {
             case FightLayer_Roles_Role_Status.State.Idle:
@@ -97,7 +125,7 @@ public class FightLayer_Roles_Role : MonoBehaviour
     }
     private void Pathfinding_Moveing_Display()
     {
-        
+        if(operating)return;
         if(!roleMove.m_IsMoving)return;
         roleMove.UpdateMoving();
     }

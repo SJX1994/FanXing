@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using MonsterLove.StateMachine;
 using TMPro;
+using System;
 
 namespace FanXing.FightDemo
 {
@@ -25,6 +26,7 @@ namespace FanXing.FightDemo
             Move,
             Action,
             ActionInOperation,
+            ActionRelease,
             Defense,
             
         }
@@ -34,6 +36,7 @@ namespace FanXing.FightDemo
             Idle,
             Action,
             ActionInOperation,
+            ActionRelease,
             Move
         }
         public class Driver
@@ -84,6 +87,14 @@ namespace FanXing.FightDemo
                         break;
                 }
             };
+            TemporaryStorage.OnActionRelease += () =>
+            {
+                DOVirtual.DelayedCall(0.2f, () =>
+                {
+                    ExecuteCommand(Command.ActionRelease);
+                });
+                
+            };
         }
         public void ExecuteCommand(Command command)
         {
@@ -100,6 +111,9 @@ namespace FanXing.FightDemo
                     break;
                 case Command.ActionInOperation:
                     fsm.ChangeState(States.ActionInOperation);
+                    break;
+                case Command.ActionRelease:
+                    fsm.ChangeState(States.ActionRelease);
                     break;
                 case Command.Defense:
                     break;
@@ -165,6 +179,7 @@ namespace FanXing.FightDemo
         void ActionInOperation_Enter()
         {
             TemporaryStorage.InvokeOnOperating(true);
+            TemporaryStorage.InvokeOnHideUnitDescription();
             Hide_Command_Buttons();
             Hide_Move_Buttons();
             Hide_Action_Buttons();
@@ -178,6 +193,11 @@ namespace FanXing.FightDemo
         void ActionInOperation_Exit()
         {
             TemporaryStorage.InvokeOnActionCanceled(who_been_selected);
+        }
+        void ActionRelease_Enter()
+        {
+            TemporaryStorage.InvokeOnOperating(false);
+            TemporaryStorage.BuoyState = OperateLayer_Buoy.State.ActionExecute;
         }
         void Move_Enter()
         {

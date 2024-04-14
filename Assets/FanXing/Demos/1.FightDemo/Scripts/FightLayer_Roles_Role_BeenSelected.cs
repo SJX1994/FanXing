@@ -15,6 +15,27 @@ namespace FanXing.FightDemo
         Tween tween_alpha = null;
         float duration = 0.2f;
         MaterialPropertyBlock propertyBlock;
+        bool onSelect = false;
+        public bool OnSelect
+        {
+            get
+            {
+                return onSelect;
+            }
+            set
+            {
+                // if(onSelect == value)return;
+                onSelect = value;
+                if(onSelect)
+                {
+                    OnSelected();
+                }
+                else
+                {
+                    OnCanceled();
+                }
+            }
+        }
         void Start()
         {
             lineRenderer_BeenSelected.gameObject.SetActive(false);
@@ -29,11 +50,6 @@ namespace FanXing.FightDemo
         void Update()
         {
             
-        }
-        void OnDestroy()
-        {
-            tween_radius?.Kill();
-            tween_alpha?.Kill();
         }
         public void OnSelected()
         {
@@ -61,6 +77,7 @@ namespace FanXing.FightDemo
             ).OnComplete(()=>
             {
                 PropertyBlock_Alpha(1);
+                lineRenderer_BeenSelected.gameObject.SetActive(true);
             });
             
         }

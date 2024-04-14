@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: UnitSimpleDescription_DodgeTanks
   m_EditorClassIdentifier: 
   selectName: 1
-  selectType: 0
+  selectType: 1
   selectCamp: 1
   HP_max: 500
   HP_current: 300

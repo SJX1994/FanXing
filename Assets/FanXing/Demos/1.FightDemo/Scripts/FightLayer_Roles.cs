@@ -10,6 +10,8 @@ namespace FanXing.FightDemo
         [SerializeField] List<FightLayer_Roles_Role> roles = new();
         private ScriptableObject_UnitSimpleDescription temp_unitSimpleDescription;
         private ScriptableObject_UI_Manager_DisplayOptions temp_UI_Manager_DisplayOptions;
+        private bool operating = false;
+        
         void Start()
         {
             roles = GetComponentsInChildren<FightLayer_Roles_Role>().ToList();
@@ -41,11 +43,22 @@ namespace FanXing.FightDemo
             };
             TemporaryStorage.OnCancelKeyPressed += () =>
             {
-                if(TemporaryStorage.BuoySelectingObject == null)return;
+                if(!TemporaryStorage.BuoySelectingObject || !TemporaryStorage.BuoySelectedObject)return;
                 TemporaryStorage.InvokeOnRestBuoyPosition(TemporaryStorage.BuoySelectedObject.transform.position);
                 TemporaryStorage.InvokeOnMoveFinish(TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role_Move_Ground>());
                 TemporaryStorage.InvokeOnMoveFinish(TemporaryStorage.BuoySelectedObject.GetComponent<FightLayer_Roles_Role_Move_Flight>());
             };
+            TemporaryStorage.OnCoolDown += CoolDown;
+            TemporaryStorage.OnOperating += (b) =>
+            {
+                operating = b;
+            };
+        }
+        void CoolDown(FightLayer_Roles_Role_Action action, float time)
+        {
+            if(!action.transform.TryGetComponent(out FightLayer_Roles_Role role))return;
+            if(roles.Find(r => r == role) == null)return;
+            StartCoroutine(role.Countdown(time));
         }
         void ShowRoleDescription(GameObject go)
         {

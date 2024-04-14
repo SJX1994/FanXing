@@ -14,6 +14,7 @@ namespace FanXing.FightDemo
             TemporaryStorage.OnConfirmKeyPressed += () =>
             {
                 if( TemporaryStorage.BuoyState != OperateLayer_Buoy.State.Action )return;
+                if( TemporaryStorage.BuoySelectingObject != gameObject)return;
                 ActionRelease();
             };
         }
@@ -44,7 +45,7 @@ namespace FanXing.FightDemo
         // 技能释放
         protected virtual void ActionRelease()
         {
-            
+            TemporaryStorage.InvokeOnActionRelease();
         }
         
     }

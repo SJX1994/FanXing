@@ -107,6 +107,26 @@ namespace FanXing.FightDemo
         {
             OnActionCanceled?.Invoke(who_been_selected);
         }
+        public static event Action OnActionRelease;
+        public static void InvokeOnActionRelease()
+        {
+            OnActionRelease?.Invoke();
+        }
+        public static event Action<ScriptableObject_Action,Vector3,Vector3> OnGenerateMissile;
+        public static void InvokeOnGenerateMissile(ScriptableObject_Action scriptableObject_Action,Vector3 startPostion,Vector3 endPosition)
+        {
+            OnGenerateMissile?.Invoke(scriptableObject_Action,startPostion,endPosition);
+        }
+        public static event Action<FightLayer_Generated_Missile> OnDestoryMissile;
+        public static void InvokeOnDestoryMissile(FightLayer_Generated_Missile fightLayer_Generated_Missile)
+        {
+            OnDestoryMissile?.Invoke(fightLayer_Generated_Missile);
+        }
+        public static event Action<FightLayer_Roles_Role_Action,float> OnCoolDown;
+        public static void InvokeOnCoolDown(FightLayer_Roles_Role_Action who,float time)
+        {
+            OnCoolDown?.Invoke(who,time);
+        }
         public enum UnitName
         {
             AOE_Mage,
@@ -149,6 +169,9 @@ namespace FanXing.FightDemo
             CurrentBuoy_RoleType = ScriptableObject_Role_Infomation.RoleType.Null;
             OnActionSelected = null;
             OnActionCanceled = null;
+            OnGenerateMissile = null;
+
+            
         }
         
     }

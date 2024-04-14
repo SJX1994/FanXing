@@ -6,10 +6,11 @@ namespace FanXing.FightDemo
     [CreateAssetMenu(fileName = "Action_", menuName = "ScriptableObjects/Action", order = 1)]
     public class ScriptableObject_Action : ScriptableObject
     {
+        [Header("技能逻辑")]
         public bool IsUnlocked = false;
         public string ActionName = "Action";
         public string Description = "Description";
-        public Sprite Icon; // 技能图标
+        
         public int Cost; // 消耗
         public int Range; // 范围
         public enum Action
@@ -44,5 +45,9 @@ namespace FanXing.FightDemo
         public int shield; // 护盾
         public int armorPiercing; // 穿甲
         public float cooldown; // 冷却
+        [Header("技能效果")]
+        public Sprite Icon; // 技能图标
+        public ParticleSystem Particle; // 技能特效
+        public int MissileCount; // 导弹数量
     }
 }

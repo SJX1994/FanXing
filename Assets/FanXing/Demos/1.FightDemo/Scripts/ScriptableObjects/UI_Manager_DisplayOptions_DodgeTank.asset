@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d0edd6b45750f944be503525ace6bbd, type: 3}
   m_Name: UI_Manager_DisplayOptions_DodgeTank
   m_EditorClassIdentifier: 
-  CommandSelectSystem_Button_Fight: 0
+  CommandSelectSystem_Button_Fight: 1
   CommandSelectSystem_Button_Move: 1
   CommandSelectSystem_Button_Defense: 0
   ActionUI_Button_0:
-    Display: 0
-    Content: {fileID: 0}
+    Display: 1
+    Content: {fileID: 11400000, guid: ef926eff57b9ff640b37f14b255dadab, type: 2}
   ActionUI_Button_1:
     Display: 0
     Content: {fileID: 0}
