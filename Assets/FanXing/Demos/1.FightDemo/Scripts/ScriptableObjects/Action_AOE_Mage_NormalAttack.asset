@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90512e57e93d75543b13f556cd75a97e, type: 3}
+  m_Name: Action_AOE_Mage_NormalAttack
+  m_EditorClassIdentifier: 
+  IsUnlocked: 0
+  ActionName: "\u666E\u901A\u653B\u51FB"
+  Description: Description
+  Cost: 0
+  Range: 5
+  action: 2
+  actionType: 2
+  CanMove: 0
+  SupportPrefab: {fileID: 0}
+  damagePercentage: 0
+  shield: 0
+  armorPiercing: 0
+  cooldown: 2
+  Icon: {fileID: 0}
+  Particle: {fileID: 6175131046750277777, guid: 1551d5ea6bf5e594682a65123ae156a3, type: 3}
+  MissileCount: 5
