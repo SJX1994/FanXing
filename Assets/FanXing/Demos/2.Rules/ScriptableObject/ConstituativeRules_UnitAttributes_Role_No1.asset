@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: beb284c6e114b7d41be3b63bb95b6bd0, type: 3}
+  m_Name: ConstituativeRules_UnitAttributes_Role_No1
+  m_EditorClassIdentifier: 
+  MainColor: {r: 0.4062722, g: 1, b: 0.36163503, a: 1}
+  UnitName: Role1
+  Health: 100
+  Attack: 3
+  Position: {x: 0, y: 0}
+  TextMeshPro: {fileID: 0}
+  unitType: 1
+  UnitStateCurrent: 0
+  ThreatLevel: 0
+  IsInherentTarget: 0
+  DistancePriority: 1
+  ProgressDuration: 9
+  ProgressSprite: {fileID: 21300000, guid: 2fce8a9feac9243459486bd0a4545c83, type: 3}
+  CanUseAction: 0
+  Target: {fileID: 0}
+  AutoAttackAttackDuration: 0.3
+  AutoAttackInterval: 1
+  AutoAttackRange: 3
+  AutoPatrolRange: 5
+  potentialTargets: []

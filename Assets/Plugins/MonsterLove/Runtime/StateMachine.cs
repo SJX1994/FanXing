@@ -541,6 +541,7 @@ namespace MonsterLove.StateMachine
 
 				return (TState) lastState.state;
 			}
+			
 		}
 
 		public TState NextState
